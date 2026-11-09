@@ -1,0 +1,1165 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>찬찬 — 의심스러운 순간, 찬찬하게</title>
+<meta name="description" content="모르는 번호로 온 문자를 어르신 폰 안에서 먼저 보고, 위험하면 무엇을 하실지까지 알려드립니다. 어르신은 무료. 복지관·지자체 시범 도입 문의를 받습니다.">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="찬찬 — 의심스러운 순간, 찬찬하게">
+<meta property="og:description" content="모르는 번호로 온 문자를 폰 안에서 먼저 보고, 무엇을 하실지까지 알려드립니다.">
+<meta property="og:image" content="logo.png">
+<meta property="og:type" content="website">
+
+<!--
+  ══ 찬찬 랜딩 ══════════════════════════════════════════════
+
+  기준: branding/CHANCHAN_Landing_Page_Agent_Brief.pdf (2026-11-09)
+        + .claude/rules/copy-writing.md · product-principles.md
+
+  ⚠️ **글꼴은 광양햇살체 한 벌입니다.** 다른 글꼴을 섞지 마세요(브리프 제1조).
+     이 글꼴이 **덮지 못하는 글자**가 있습니다 — `₩` `−`(U+2212) `☰` `⚠`.
+     쓰면 그 글자만 다른 글꼴로 튑니다. 이모지는 일부러 기기 것에 맡깁니다.
+
+  ⚠️ **신청서 두 벌은 site.js 와 짝입니다.** 아래를 바꾸면 같이 깨집니다:
+       form[data-form] · .fbody · .fdone · .ferr · button[type=submit]
+       template#tpl-waitlist · [data-waitlist-slot] · [data-scroll-to]
+       칸 이름(email · parent_android · wtp · region · consent · nickname …)
+
+  ⚠️ 「안전합니다」·「정상」·「괜찮습니다」를 쓰지 않습니다. 최저 등급은
+     「답하지 않으셔도 됩니다」입니다 (product-principles.md).
+     「AI 판정」도 쓰지 않습니다 — 기기 안 모델이 실제로 들어가기 전까지는.
+-->
+<style>
+:root{
+  /* 브리프에 못 박힌 토큰 — 바꾸지 마세요 */
+  --green:#2F6B4F; --deep:#183F30; --leaf:#4F8F69; --mist:#E9F2EC;
+  --bg:#FFFDFC; --ivory:#F7F3EA; --coral:#D96B63; --alert:#B84A44;
+  --ink:#24332B; --muted:#5E6B63; --line:#DDE7E0;
+  --blush:#FBE9E7; --amberBg:#FDF3E3; --amber:#B7791F;
+  --wrap:1200px; --pad:40px;
+  --rise:cubic-bezier(.2,.85,.25,1);
+  --font:'Gwangyang','Malgun Gothic','맑은 고딕',-apple-system,
+         BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+}
+/* 출처표시: 광양시청 광양햇살체 (공공누리 제1유형) */
+@font-face{font-family:'Gwangyang';src:url('fonts/Gwangyang-Regular.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Gwangyang';src:url('fonts/Gwangyang-Bold.woff2') format('woff2');
+  font-weight:700;font-style:normal;font-display:swap}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  font-family:var(--font);font-weight:400;font-size:17px;line-height:1.62;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+  word-break:keep-all;overflow-wrap:break-word;overflow-x:hidden
+}
+h1,h2,h3,h4,b,strong{font-weight:700;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;font-family:var(--font);color:inherit}
+button{background:none;border:0;cursor:pointer}
+a{color:var(--green)}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--pad)}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--green);color:#fff;
+  padding:12px 18px;border-radius:0 0 10px 0;z-index:100}
+.skip:focus{left:0}
+
+/* ── 아이콘 ── */
+.ic{width:26px;height:26px;flex:0 0 auto;stroke:currentColor;fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ic.sm{width:20px;height:20px}
+.ic.lg{width:34px;height:34px;stroke-width:1.7}
+.icbox{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;flex:0 0 auto}
+.icbox.g{background:var(--mist);color:var(--green)}
+.icbox.r{background:var(--blush);color:var(--alert)}
+.icbox.a{background:var(--amberBg);color:var(--amber)}
+.icbox.d{background:rgba(169,201,182,.16);color:#A9C9B6}
+.icbox.sm{width:42px;height:42px;border-radius:12px}
+
+/* ── 공통 ── */
+section{padding:92px 0}
+section.tint{background:var(--ivory)}
+section.dark{background:var(--deep);color:#F2F7F3}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;
+  color:var(--green);background:var(--mist);padding:7px 15px;border-radius:999px;margin-bottom:20px}
+section.dark .eyebrow{color:#C6DED0;background:rgba(169,201,182,.14)}
+h2{font-size:clamp(28px,3.4vw,42px);line-height:1.25;margin-bottom:14px}
+.lead{font-size:clamp(17px,1.5vw,20px);color:var(--muted);line-height:1.65;max-width:62ch}
+section.dark .lead{color:#BFD4C7}
+.src{font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:22px}
+section.dark .src{color:#8FA79A}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:52px;padding:0 26px;border-radius:999px;background:var(--green);color:#fff;
+  font-size:17px;font-weight:700;transition:background .18s,transform .18s}
+.btn:hover{background:var(--deep);transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--green);box-shadow:inset 0 0 0 2px var(--line)}
+.btn.ghost:hover{background:var(--mist);box-shadow:inset 0 0 0 2px var(--leaf)}
+.btn.onDark{background:#F2F7F3;color:var(--deep)}
+.btn.onDark:hover{background:#fff}
+.btn.sm{min-height:44px;font-size:15px;padding:0 18px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px}
+.card.mist{background:var(--mist);border-color:transparent}
+.card.dk{background:rgba(255,255,255,.055);border-color:rgba(169,201,182,.2);color:#F2F7F3}
+.card h3{font-size:21px;margin-bottom:9px}
+.card p{color:var(--muted);font-size:16.5px}
+.card.dk p{color:#BFD4C7}
+.grid{display:grid;gap:18px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* ══ 01 네비게이션 ══ */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,253,252,0);
+  border-bottom:1px solid transparent;transition:background .25s,border-color .25s,box-shadow .25s}
+.nav.solid{background:rgba(255,253,252,.94);backdrop-filter:blur(10px);
+  border-bottom-color:var(--line);box-shadow:0 2px 18px rgba(36,51,43,.05)}
+.nav .wrap{display:flex;align-items:center;gap:26px;height:74px}
+.mark{display:flex;align-items:baseline;gap:9px;flex:0 0 auto;text-decoration:none;color:var(--ink)}
+.mark b{font-size:25px;letter-spacing:-.02em}
+.mark span{font-size:13px;color:var(--muted)}
+.navlinks{display:flex;gap:4px;margin-left:auto}
+.navlinks a{padding:10px 14px;border-radius:10px;font-size:16px;font-weight:700;
+  color:var(--muted);text-decoration:none;transition:background .18s,color .18s}
+.navlinks a:hover{background:var(--mist);color:var(--green)}
+
+/* ══ 02 히어로 ══ */
+.hero{padding:56px 0 86px;background:
+  radial-gradient(1100px 460px at 78% -8%, var(--mist) 0%, rgba(233,242,236,0) 62%)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  gap:48px;align-items:center}
+.hero h1{font-size:clamp(36px,5vw,68px);line-height:1.12;letter-spacing:-.025em}
+.hero .sub{font-size:clamp(17px,1.6vw,21px);color:var(--muted);margin-top:20px;max-width:46ch;line-height:1.65}
+.hero .mini{margin-top:26px;display:flex;gap:22px;flex-wrap:wrap}
+.hero .mini div{display:flex;align-items:center;gap:9px;font-size:15.5px;color:var(--muted)}
+.hero .mini svg{color:var(--leaf)}
+
+/* 겹친 폰 두 대 */
+/* 폰 두 대가 겹쳐 서 있고, 설명글은 그 **아래** 자리를 따로 받습니다.
+   겹치면 글이 폰 위로 올라탑니다 */
+.phones{position:relative;height:560px;padding-bottom:46px;
+  display:flex;align-items:center;justify-content:center}
+.ph{position:absolute;border-radius:30px;overflow:hidden;background:#fff;
+  box-shadow:0 26px 60px rgba(36,51,43,.22);border:1px solid var(--line);opacity:0}
+/* ⚠️ 결과 화면은 세로로 아주 깁니다(414×1512). 위쪽만 보여 줍니다 —
+   그대로 두면 히어로를 뚫고 내려갑니다. */
+.ph img{width:100%;display:block;height:430px;object-fit:cover;object-position:top center}
+.ph.back{width:194px;left:50%;margin-left:-166px;top:34px;transform:translate(-36px,20px) rotate(-7deg)}
+.ph.front{width:218px;left:50%;margin-left:-20px;top:6px;transform:translate(36px,20px) rotate(6deg)}
+.hero.in .ph{animation:phIn .9s var(--rise) forwards}
+.hero.in .ph.front{animation-delay:.12s}
+@keyframes phIn{to{opacity:1;transform:translate(0,0) rotate(var(--rot,0deg))}}
+.ph.back{--rot:-5deg}
+.ph.front{--rot:4deg}
+.hero.in .ph.back{animation-name:phInBack}
+@keyframes phInBack{to{opacity:1;transform:translate(0,0) rotate(-5deg)}}
+.hero.in .ph.front{animation-name:phInFront}
+@keyframes phInFront{to{opacity:1;transform:translate(0,0) rotate(4deg)}}
+.hero.in.idle .ph.back{animation:phInBack .9s var(--rise) forwards, floatA 6.5s ease-in-out 1.4s infinite}
+.hero.in.idle .ph.front{animation:phInFront .9s var(--rise) .12s forwards, floatB 7s ease-in-out 1.6s infinite}
+@keyframes floatA{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-7px) rotate(-5deg)}}
+@keyframes floatB{0%,100%{transform:translateY(0) rotate(4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+.phtag{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:13px;
+  color:var(--muted);line-height:1.5}
+
+/* ══ 03 문제 → 해결 ══ */
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:30px}
+.fig{background:rgba(255,255,255,.07);border:1px solid rgba(169,201,182,.2);
+  border-radius:20px;padding:24px}
+.fig b{display:block;font-size:clamp(28px,3.4vw,40px);color:#fff;line-height:1.1}
+.fig span{display:block;font-size:15.5px;color:#BFD4C7;margin-top:9px;line-height:1.5}
+.steps3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:34px;
+  position:relative}
+.st{background:rgba(255,255,255,.07);border:1px solid rgba(169,201,182,.2);
+  border-radius:20px;padding:22px}
+.st em{font-style:normal;display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--coral);color:#fff;
+  font-size:15px;font-weight:700;margin-bottom:12px}
+.st b{display:block;font-size:19px;color:#fff;margin-bottom:6px}
+.st span{font-size:15.5px;color:#BFD4C7;line-height:1.55}
+
+/* ══ 04 데모 ══ */
+.demo{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:46px;align-items:start;margin-top:34px}
+.pick{display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;
+  background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 18px;
+  transition:border-color .2s,transform .2s,box-shadow .2s}
+.msg:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(36,51,43,.1)}
+.msg[aria-pressed="true"]{border-color:var(--green);background:var(--mist)}
+.msg .who{font-size:14px;color:var(--muted);display:block;margin-bottom:3px}
+.msg .txt{font-size:16.5px;line-height:1.5;display:block}
+.demo-note{font-size:14px;color:var(--muted);margin-top:14px}
+.scr{width:300px;border-radius:30px;border:1px solid var(--line);background:#fff;
+  box-shadow:0 20px 48px rgba(36,51,43,.14);padding:20px;min-height:420px;
+  display:flex;flex-direction:column;gap:14px}
+.scr .top{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted);
+  border-bottom:1px solid var(--line);padding-bottom:12px}
+.scanbar{height:7px;border-radius:7px;background:var(--mist);overflow:hidden}
+.scanbar i{display:block;height:100%;width:0;background:var(--leaf);border-radius:7px}
+.scanning .scanbar i{animation:scan 1s linear forwards}
+@keyframes scan{to{width:100%}}
+/* ══ 신호등 ══════════════════════════════════════════════
+   판정 세 등급을 Figma 보드와 같은 색으로 보여 줍니다.
+   ⚠️ **색만으로 뜻을 전하지 않습니다** — 램프마다 글자가 붙고, 켜진 램프는
+      색뿐 아니라 **테두리 · 그림자 · 글자 굵기**로도 구분됩니다
+      (흑백으로 출력해도 구분돼야 합니다 · product-principles.md). */
+/* 신호등 하우징과 램프. 색은 Figma `chanchan.v2` 의 `SIGNAL/신호등` 에서
+   그대로 뽑았습니다 — 눈대중이 아니라 그림에서 집은 값입니다.
+   ⚠️ 맨 아래 램프는 **초록이 아니라 옅은 회색**입니다. 초록으로 바꾸지
+      마세요 — 초록은 「안전합니다 · 가도 좋다」로 읽힙니다
+      (product-principles.md · ui-screens.md 절대 규칙). */
+.tl{--w:46px;width:var(--w);height:calc(var(--w) * 2.05);flex:0 0 auto;
+  border-radius:calc(var(--w) / 2.05);background:#253028;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;
+  padding:calc(var(--w) * .1) 0}
+.tl s{width:70%;aspect-ratio:1;border-radius:50%;background:#18211C;text-decoration:none;
+  transition:background .4s,box-shadow .4s}
+.tl.d s:nth-child(1){background:#E2483C;box-shadow:0 0 13px rgba(226,72,60,.8)}
+.tl.c s:nth-child(2){background:#F2A51A;box-shadow:0 0 13px rgba(242,165,26,.75)}
+.tl.u s:nth-child(3){background:#AFBCB4;box-shadow:0 0 13px rgba(175,188,180,.65)}
+
+.signal{display:flex;gap:10px;align-items:stretch}
+.signal .lamp{flex:1;display:flex;flex-direction:column;align-items:center;gap:11px;
+  padding:16px 8px;border-radius:16px;background:#F3F5F3;border:2px solid transparent;
+  transition:background .35s,border-color .35s,transform .35s var(--rise)}
+.signal .lamp b{font-size:13.5px;color:var(--muted);text-align:center;line-height:1.3;font-weight:400}
+.signal .lamp.on{transform:translateY(-4px)}
+.signal .lamp.on b{color:var(--ink);font-weight:700}
+.signal .lamp.d.on{background:var(--blush);border-color:#E7B8B3}
+.signal .lamp.c.on{background:var(--amberBg);border-color:#E3C68E}
+.signal .lamp.u.on{background:#EBEEEC;border-color:#C6CFC9}
+.signal.big .lamp{padding:22px 12px;gap:14px}
+.signal.big .tl{--w:58px}
+.signal.big .lamp b{font-size:17px}
+.signal button.lamp{cursor:pointer}
+
+/* 보드의 번호 매긴 할 일 */
+.stepsnum{list-style:none;counter-reset:n;display:flex;flex-direction:column;gap:9px}
+.stepsnum li{display:flex;gap:11px;align-items:flex-start;font-size:15.5px;line-height:1.5}
+.stepsnum em{font-style:normal;flex:0 0 auto;width:23px;height:23px;border-radius:50%;
+  background:#E7EBE8;color:var(--muted);display:grid;place-items:center;
+  font-size:13px;font-weight:700;margin-top:1px}
+.stepsnum li:first-child em{background:var(--lit,var(--alert));color:#fff}
+.stepsnum li:first-child{font-weight:700}
+.verdict{border-radius:16px;padding:15px 17px;border:2px solid}
+.verdict b{display:block;font-size:21px;margin-bottom:4px}
+.verdict span{font-size:15.5px;color:var(--muted);line-height:1.5}
+.v-danger{background:var(--blush);border-color:#F2D6D2}.v-danger b{color:#A63F3A}
+.v-caution{background:var(--amberBg);border-color:#EFD9B4}.v-caution b{color:#8A4E12}
+.v-unclear{background:#F1F3F1;border-color:var(--line)}.v-unclear b{color:#3F4A43}
+.todo{list-style:none;display:flex;flex-direction:column;gap:8px}
+.todo li{position:relative;padding-left:26px;font-size:15.5px;line-height:1.5}
+.todo li::before{content:'';position:absolute;left:2px;top:.42em;width:14px;height:14px;
+  border-radius:50%;background:var(--mist);box-shadow:inset 0 0 0 2px var(--leaf)}
+.fade{animation:fadeUp .4s var(--rise) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* 작은 글씨라 4.5:1 을 넘겨야 합니다 — 옅은 amber 로는 3.3 밖에 안 나옵니다 */
+.demo-badge{display:inline-block;font-size:13.5px;font-weight:700;color:#7A440F;
+  background:var(--amberBg);padding:4px 11px;border-radius:999px}
+
+/* ══ 05 벤토 ══ */
+.bento{display:grid;grid-template-columns:1.35fr 1fr;grid-auto-rows:minmax(0,auto);gap:18px;margin-top:34px}
+.bento .big{grid-row:span 2;display:flex;flex-direction:column;justify-content:space-between}
+.bento .big img{border-radius:16px;margin-top:22px;border:1px solid var(--line)}
+
+/* ── 판정 3등급 ── */
+.vd{display:flex;gap:16px;align-items:center;border-radius:18px;padding:18px 22px;border:2px solid}
+.vd b{display:block;font-size:20px}
+.vd span{font-size:16px;color:var(--muted)}
+.vd.d{background:var(--blush);border-color:#F2D6D2}.vd.d b{color:#A63F3A}
+.vd.c{background:var(--amberBg);border-color:#EFD9B4}.vd.c b{color:#8A4E12}
+.vd.u{background:#F1F3F1;border-color:var(--line)}.vd.u b{color:#3F4A43}
+
+/* ── 약속 · 접근성 ── */
+.promise{display:flex;gap:15px;align-items:flex-start;padding:20px 0;border-top:1px solid var(--line)}
+.promise:first-child{border-top:0}
+.promise b{display:block;font-size:18px;margin-bottom:4px}
+.promise p{color:var(--muted);font-size:16px}
+
+/* ── FAQ ── */
+details{border-bottom:1px solid var(--line)}
+summary{font-size:19px;font-weight:700;cursor:pointer;list-style:none;display:flex;
+  align-items:center;gap:12px;padding:20px 0}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'';margin-left:auto;width:11px;height:11px;flex:0 0 auto;
+  border-right:2.5px solid var(--green);border-bottom:2.5px solid var(--green);
+  transform:rotate(45deg) translateY(-3px);transition:transform .22s}
+details[open] summary::after{transform:rotate(-135deg) translateY(-3px)}
+details .ans{padding:0 0 22px;color:var(--muted);font-size:16.5px;line-height:1.7;max-width:70ch}
+
+/* ── 신청서 ── */
+/* ⚠️ **글자색을 반드시 되돌립니다.** 이 카드는 어두운 구간 안에도 들어가는데,
+   `section.dark` 의 흰 글자색이 그대로 상속되면 **흰 카드에 흰 글씨**가 되어
+   신청서가 통째로 안 보입니다 (2026-11-09 에 실제로 그랬습니다 — 대비비 1.08). */
+.formcard{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:24px;
+  padding:30px;max-width:620px;box-shadow:0 14px 40px rgba(36,51,43,.06)}
+.formcard h3,.formcard label,.formcard .q,.formcard legend,.formcard span,
+.formcard li,.formcard p{color:inherit}
+.formcard .sub,.formcard .hint,.formcard .agree li{color:var(--muted)}
+.formcard .req{color:var(--alert)}
+section.dark .formcard{box-shadow:none}
+.formcard h3{font-size:23px;margin-bottom:6px}
+.formcard .sub{color:var(--muted);font-size:16px;margin-bottom:22px}
+.fld{margin-bottom:18px}
+.fld label,.q{display:block;font-weight:700;font-size:16px;margin-bottom:8px}
+.req{color:var(--alert)}
+.fld input,.fld select,.fld textarea{width:100%;min-height:52px;padding:13px 15px;
+  border:2px solid var(--line);border-radius:14px;background:#fff;font-size:16.5px}
+.fld textarea{min-height:110px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--leaf);outline:none}
+.hint{display:block;font-size:14px;color:var(--muted);margin-top:7px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:11px;padding:13px 15px;border:2px solid var(--line);
+  border-radius:14px;cursor:pointer;font-size:16.5px;min-height:52px;transition:border-color .18s,background .18s}
+.opt:hover{border-color:var(--leaf);background:var(--mist)}
+.opt input{width:21px;height:21px;accent-color:var(--green);flex:0 0 auto}
+.agree{background:var(--ivory);border-radius:16px;padding:18px;margin-bottom:18px}
+.agree > label{display:flex;gap:11px;align-items:flex-start;cursor:pointer;font-size:16.5px}
+.agree input{width:21px;height:21px;accent-color:var(--green);flex:0 0 auto;margin-top:2px}
+.agree ul{list-style:none;margin-top:12px;padding-left:32px}
+.agree li{font-size:14.5px;color:var(--muted);margin-bottom:5px;position:relative;padding-left:12px}
+.agree li::before{content:'·';position:absolute;left:0}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.ferr{background:var(--blush);color:#8E3833;border-radius:12px;padding:13px 15px;
+  font-size:16px;margin-bottom:16px}
+.fdone{text-align:center;padding:34px 10px}
+.fdone b{display:block;font-size:22px;margin-bottom:10px;color:var(--green)}
+.fdone p{color:var(--muted);font-size:16.5px}
+.formcard .btn{width:100%}
+.nojs{font-size:15px;color:var(--muted);background:var(--ivory);border-radius:14px;padding:16px}
+
+/* ── 기관 띠 ── */
+.orgbar{background:var(--deep);color:#F2F7F3}
+.orgbar button{width:100%;padding:15px 0;font-size:16px;color:#F2F7F3;text-align:center}
+.orgbar span{color:#F7B9B3;font-weight:700;margin-left:6px}
+
+/* ── 영상 ── */
+.vid{border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#000;
+  max-width:420px;margin:28px auto 0}
+.vid video{width:100%;display:block;color:#F2F7F3}
+
+/* ── 바닥 ── */
+footer{background:var(--deep);color:#BFD4C7;padding:62px 0 70px;font-size:15.5px}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px;margin-bottom:34px}
+footer b.fm{font-size:22px;color:#fff;display:block;margin-bottom:8px}
+footer a{color:#DCEAE1;text-decoration:none}
+footer a:hover{text-decoration:underline}
+footer h4{color:#fff;font-size:15px;margin-bottom:12px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+footer .fine{border-top:1px solid rgba(169,201,182,.2);padding-top:26px;font-size:14px;
+  color:#8FA79A;line-height:1.7}
+
+/* ── 나타나기 ── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s var(--rise),transform .55s var(--rise)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
+
+dialog{border:0;border-radius:22px;padding:30px;max-width:440px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(24,63,48,.55)}
+dialog h3{font-size:22px;margin-bottom:12px}
+dialog p{color:var(--muted);margin-bottom:12px;font-size:16.5px}
+dialog .btn{width:100%;margin-top:8px}
+
+/* ══ 좁은 화면 ══ */
+@media (max-width:980px){
+  :root{--pad:20px}
+  section{padding:64px 0}
+  .hero{padding:34px 0 60px}
+  .hero .wrap{grid-template-columns:minmax(0,1fr);gap:34px}
+  .phones{height:430px;order:2}
+  .navlinks{display:none}
+  .demo{grid-template-columns:minmax(0,1fr);gap:28px}
+  .scr{width:100%;max-width:320px;margin:0 auto}
+  .bento{grid-template-columns:minmax(0,1fr)}
+  .bento .big{grid-row:auto}
+  .c2,.c3,.figs,.steps3{grid-template-columns:minmax(0,1fr)}
+  footer .cols{grid-template-columns:minmax(0,1fr);gap:26px}
+  .formcard{padding:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important}
+  .reveal{opacity:1;transform:none}
+  .ph{opacity:1;transform:none !important}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<svg class="sprite" aria-hidden="true"><defs>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5 2.6 20h18.8L12 3.5Z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r=".7" fill="currentColor"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 2.5V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/><path d="M8.5 11h7M8.5 14.5h4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.1 8.2 7.5 9.4 4.4-1.2 7.5-4.8 7.5-9.4V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="i-family" viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M2.8 19a5.2 5.2 0 0 1 10.4 0M14 19a4.3 4.3 0 0 1 7.2-2.6"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.8" y="10.5" width="14.4" height="9.7" rx="2"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3h11a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 17.5 21h-11A1.5 1.5 0 0 1 5 19.5v-15A1.5 1.5 0 0 1 6.5 3Z"/><path d="M10.5 18h3"/></symbol>
+<symbol id="i-call" viewBox="0 0 24 24"><path d="M6 3.5h3l1.6 4-2 1.4a12 12 0 0 0 6.5 6.5l1.4-2 4 1.6v3A2 2 0 0 1 18.4 20C10.4 19.6 4.4 13.6 4 5.6A2 2 0 0 1 6 3.5Z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="m8.4 12.2 2.5 2.5 4.7-5"/></symbol>
+<symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M9.7 9.6a2.4 2.4 0 1 1 3.1 2.5c-.6.2-.8.7-.8 1.3v.5"/><circle cx="12" cy="16.6" r=".65" fill="currentColor"/></symbol>
+<symbol id="i-gov" viewBox="0 0 24 24"><path d="M4 20.5h16M5.5 20.5V9l6.5-4.5L18.5 9v11.5"/><path d="M9.5 20.5v-5h5v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 20.5h17"/><path d="M7 20.5v-6M12 20.5V7.5M17 20.5v-9"/></symbol>
+<symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></symbol>
+<symbol id="i-rules" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8 8.5h8M8 12.5h8M8 16.5h5"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M8.6 8.6 15.4 15.4"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8.5V5.5A1.5 1.5 0 0 1 5.5 4h3M15.5 4h3A1.5 1.5 0 0 1 20 5.5v3M20 15.5v3a1.5 1.5 0 0 1-1.5 1.5h-3M8.5 20h-3A1.5 1.5 0 0 1 4 18.5v-3"/><path d="M4 12h16"/></symbol>
+<symbol id="i-bang" viewBox="0 0 24 24"><path d="M12 5.5v8.5"/><circle cx="12" cy="18.2" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-qmark" viewBox="0 0 24 24"><path d="M8.6 8.9a3.5 3.5 0 1 1 4.6 3.6c-.9.3-1.2 1-1.2 1.9v.6"/><circle cx="12" cy="18.4" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tri" viewBox="0 0 24 24"><path d="M12 4.6 3 19.4h18L12 4.6Z"/><path d="M12 10v4.3"/><circle cx="12" cy="17.2" r=".75" fill="currentColor" stroke="none"/></symbol>
+</defs></svg>
+
+<!-- ══ 01 네비게이션 ══ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="mark" href="#top"><b>찬찬</b><span>급할수록 찬찬히</span></a>
+    <nav class="navlinks" aria-label="주요 메뉴">
+      <a href="#서비스소개">서비스 소개</a>
+      <a href="#작동방식">작동 방식</a>
+      <a href="#이용대상">이용 대상</a>
+      <a href="#기관문의">기관 도입</a>
+    </nav>
+    <button class="btn sm" type="button" data-scroll-to="기관문의">시범 도입 문의</button>
+  </div>
+</header>
+
+<div class="orgbar">
+  <div class="wrap">
+    <button type="button" data-scroll-to="기관문의">
+      복지관 · 지자체에서 검토 중이신가요? <span>시범 도입 문의 →</span>
+    </button>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ══ 02 히어로 ══ -->
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow"><svg class="ic sm"><use href="#i-shield"/></svg>문자 사기 · 스미싱 확인</p>
+      <h1>의심스러운 순간,<br>찬찬하게.</h1>
+      <p class="sub">모르는 번호로 온 문자를 어르신 폰 안에서 먼저 보고,
+        위험하면 <b>무엇을 하실지까지</b> 알려드립니다.</p>
+      <div class="ctas">
+        <button class="btn" type="button" data-scroll-to="작동방식">
+          <svg class="ic sm"><use href="#i-scan"/></svg>데모 체험하기</button>
+        <button class="btn ghost" type="button" data-scroll-to="기관문의">시범 도입 문의</button>
+      </div>
+      <div class="mini">
+        <div><svg class="ic sm"><use href="#i-check"/></svg>어르신은 무료</div>
+        <div><svg class="ic sm"><use href="#i-lock"/></svg>문자 내용은 폰 밖으로 안 나갑니다</div>
+        <div><svg class="ic sm"><use href="#i-phone"/></svg>안드로이드 7 이상</div>
+      </div>
+    </div>
+    <div class="phones">
+      <figure class="ph back"><img src="img/app-lock.png" alt="잠금화면에 뜬 찬찬 경고 알림" width="390" height="860"></figure>
+      <figure class="ph front"><img src="img/app-result.png" alt="확인 결과 화면 — 왜 위험한지와 지금 할 일" width="414" height="1512"></figure>
+      <p class="phtag">Figma <b>chanchan.v2</b> 설계 화면입니다. 「○명이 사기로 신고했습니다」는 준비 중입니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 03 문제 → 해결 ══ -->
+<section class="dark" id="서비스소개">
+  <div class="wrap">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-warn"/></svg>왜 문자인가</p>
+    <h2 class="reveal">전화는 막히기 시작했는데,<br>문자는 비어 있습니다</h2>
+    <p class="lead reveal d1">전화로 거는 수법은 통신사와 제조사가 기본 기능으로 막기 시작했습니다.
+      문자는 그렇지 않습니다.</p>
+
+    <div class="figs">
+      <div class="fig reveal d1"><b>34.4%</b>
+        <span>2026년 1~8월 보이스피싱 피해 건수 가운데 60대 이상이 차지한 비중</span></div>
+      <div class="fig reveal d2"><b>2,574만원</b>
+        <span>스미싱 한 건당 피해액 · 2025년 1,222만원에서 1년 만에 2.1배</span></div>
+    </div>
+
+    <div class="steps3">
+      <div class="st reveal d1"><em>1</em><b>문자를 고릅니다</b>
+        <span>모르는 번호에서 온 문자를 찬찬이 먼저 보거나, 직접 하나를 고르실 수 있습니다.</span></div>
+      <div class="st reveal d2"><em>2</em><b>폰 안에서 확인합니다</b>
+        <span>위험 신호를 찾습니다. 문자 내용은 이 폰을 떠나지 않고, 데이터를 꺼 두셔도 됩니다.</span></div>
+      <div class="st reveal d3"><em>3</em><b>할 일을 알려드립니다</b>
+        <span>어디가 문제인지 문자에 짚어 드리고, 지금 무엇을 하실지 한 줄씩 보여드립니다.</span></div>
+    </div>
+
+    <p class="src reveal">출처: 경찰청 → 서명옥 의원실(연합뉴스 2026.9.26) · 경찰청 → 박지원 의원실(창업일보 2026.10.16) · 건당 금액은 찬찬 계산</p>
+  </div>
+</section>
+
+<!-- ══ 04 데모 ══ -->
+<section id="작동방식">
+  <div class="wrap">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-scan"/></svg>작동 방식</p>
+    <h2 class="reveal">직접 눌러 보세요</h2>
+    <p class="lead reveal d1">아래 문자는 <b>설명을 위해 만든 예시</b>입니다. 실제로 받은 문자가 아니고,
+      어디로도 보내지 않습니다.</p>
+
+    <div class="demo">
+      <div>
+        <div class="pick reveal d1" role="group" aria-label="예시 문자 고르기">
+          <button class="msg" type="button" data-case="danger" aria-pressed="true">
+            <svg class="ic" style="color:var(--alert)"><use href="#i-msg"/></svg>
+            <span><span class="who">02-3XXX-1190</span>
+              <span class="txt">서울중앙지검입니다. 귀하 명의 계좌가 범죄에 연루되어 안전계좌로 옮기셔야 합니다.</span></span>
+          </button>
+          <button class="msg" type="button" data-case="caution" aria-pressed="false">
+            <svg class="ic" style="color:#8A4E12"><use href="#i-msg"/></svg>
+            <span><span class="who">010-4XXX-7731</span>
+              <span class="txt">배송이 멈췄어요. 주소를 고쳐주세요 ▶ bit.ly/······</span></span>
+          </button>
+          <button class="msg" type="button" data-case="unclear" aria-pressed="false">
+            <svg class="ic" style="color:var(--muted)"><use href="#i-msg"/></svg>
+            <span><span class="who">15XX-XXXX</span>
+              <span class="txt">[결제 안내] 승인 12,800원 / 일시불 / 잔액 조회는 앱에서 확인하세요.</span></span>
+          </button>
+        </div>
+        <button class="btn reveal d2" type="button" id="runDemo" style="margin-top:20px">
+          <svg class="ic sm"><use href="#i-scan"/></svg>확인하기</button>
+        <p class="demo-note reveal d2"><span class="demo-badge">예시 화면</span>
+          실제 판정은 폰 안에서 규칙 29가지와 조합 6가지로 합니다.
+          이 페이지의 결과는 <b>미리 적어 둔 예시</b>이며 실제로 검사하지 않습니다.</p>
+      </div>
+
+      <div class="scr reveal d2" id="scr" aria-live="polite">
+        <div class="top"><svg class="ic sm" style="color:var(--green)"><use href="#i-shield"/></svg>
+          <b>찬찬</b> 확인 결과</div>
+        <div id="scrBody">
+          <p style="color:var(--muted);font-size:16px">왼쪽에서 문자를 고르고
+            <b>확인하기</b>를 눌러 주세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 05 기능 벤토 ══ -->
+<section class="tint">
+  <div class="wrap">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-check"/></svg>이렇게 도와드려요</p>
+    <h2 class="reveal">어르신이 따로 하실 일은 없습니다</h2>
+    <p class="lead reveal d1">문자가 오면 찬찬이 먼저 봅니다.</p>
+
+    <div class="bento">
+      <div class="card big reveal d1">
+        <div>
+          <div class="icbox g"><svg class="ic lg"><use href="#i-eye"/></svg></div>
+          <h3 style="margin-top:18px">문자가 오면 먼저 봅니다</h3>
+          <p>모르는 번호에서 문자가 오면 찬찬이 먼저 살펴보고, 위험 신호가 있을 때만 알려드립니다.
+            연락처에 있는 번호는 보지 않습니다.</p>
+        </div>
+        <img src="img/app-home.png" alt="찬찬 홈 화면 — 지키고 있습니다" width="414" height="884"
+             style="max-width:280px;margin-left:auto;margin-right:auto;height:360px;object-fit:cover;object-position:top center">
+      </div>
+      <div class="card reveal d2">
+        <div class="icbox g"><svg class="ic lg"><use href="#i-msg"/></svg></div>
+        <h3 style="margin-top:16px">직접 확인도 됩니다</h3>
+        <p>「문자 불러오기」를 누르면 이 폰에 온 문자가 목록으로 뜹니다. 하나를 고르면 바로 확인해 드려요.</p>
+      </div>
+      <div class="card reveal d3">
+        <div class="icbox g"><svg class="ic lg"><use href="#i-family"/></svg></div>
+        <h3 style="margin-top:16px">가족에게도 알려드려요</h3>
+        <p>위험한 문자가 오면 연결해 둔 자녀 폰에도 알려드립니다. 문자 내용은 가지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 판정 3등급 ══ -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-rules"/></svg>판정</p>
+    <h2 class="reveal">왜 위험한지 문자에서 짚어드립니다</h2>
+    <p class="lead reveal d1">어디가 문제인지 문자에 그대로 표시해 드리고, 셋 중 하나로 알려드립니다.</p>
+
+    <!-- 신호등. 램프를 누르면 그 등급에서 무엇을 하시면 되는지 아래에 뜹니다 -->
+    <div class="reveal d1" style="margin-top:30px;max-width:720px">
+      <div class="signal big" id="tier">
+        <button class="lamp d on" type="button" data-tier="d" aria-pressed="true">
+          <i class="tl d" aria-hidden="true"><s></s><s></s><s></s></i><b>위험합니다</b></button>
+        <button class="lamp c" type="button" data-tier="c" aria-pressed="false">
+          <i class="tl c" aria-hidden="true"><s></s><s></s><s></s></i><b>조심하세요</b></button>
+        <button class="lamp u" type="button" data-tier="u" aria-pressed="false">
+          <i class="tl u" aria-hidden="true"><s></s><s></s><s></s></i><b>답하지 않으셔도 됩니다</b></button>
+      </div>
+      <div class="card" id="tierInfo" style="margin-top:16px"></div>
+    </div>
+    <p class="src reveal">인증번호 · 결제 알림 · 배송 알림 · 광고처럼 받고 끝나는 문자는
+      「받기만 하면 되는 문자입니다」라고 함께 알려드립니다.
+      <b>「안전합니다」라는 등급은 두지 않습니다</b> — 위험 신호를 못 찾았을 뿐, 안전하다는 뜻이 아니기 때문입니다.</p>
+  </div>
+</section>
+
+<!-- ══ 06 접근성 · 약속 ══ -->
+<section class="tint" id="이용대상">
+  <div class="wrap">
+    <div class="grid c2" style="gap:48px;align-items:start">
+      <div>
+        <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-type"/></svg>이용 대상</p>
+        <h2 class="reveal">75세 어르신이 혼자<br>쓰실 수 있게 만듭니다</h2>
+        <p class="lead reveal d1">가장 어려운 분이 혼자 쓰시면 모두가 쓸 수 있습니다.
+          그래서 화면을 이렇게 짭니다.</p>
+        <div class="grid c2 reveal d2" style="margin-top:26px;gap:12px">
+          <div class="card" style="padding:18px"><b style="font-size:17px">큰 글씨</b>
+            <p style="font-size:15px;margin-top:4px">본문 17px 아래로 내려가지 않습니다</p></div>
+          <div class="card" style="padding:18px"><b style="font-size:17px">한 화면에 할 일 하나</b>
+            <p style="font-size:15px;margin-top:4px">고를 것은 세 개까지</p></div>
+          <div class="card" style="padding:18px"><b style="font-size:17px">색만으로 말하지 않기</b>
+            <p style="font-size:15px;margin-top:4px">흑백으로 출력해도 구분됩니다</p></div>
+          <div class="card" style="padding:18px"><b style="font-size:17px">막다른 길 없음</b>
+            <p style="font-size:15px;margin-top:4px">모든 화면에 다음 걸음이 있습니다</p></div>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-lock"/></svg>이것만은 지킵니다</p>
+        <h2 class="reveal" style="font-size:clamp(24px,2.6vw,32px)">다섯 가지는<br>어떤 경우에도 바뀌지 않습니다</h2>
+        <div class="reveal d1" style="margin-top:20px">
+          <div class="promise"><div class="icbox g sm"><svg class="ic sm"><use href="#i-lock"/></svg></div>
+            <div><b>문자 내용이 이 폰을 떠나지 않습니다</b><p>확인은 전부 폰 안에서 합니다.</p></div></div>
+          <div class="promise"><div class="icbox g sm"><svg class="ic sm"><use href="#i-stop"/></svg></div>
+            <div><b>「안전합니다」라고 말하지 않습니다</b><p>위험 신호를 못 찾았을 뿐, 안전하다는 뜻이 아닙니다.</p></div></div>
+          <div class="promise"><div class="icbox g sm"><svg class="ic sm"><use href="#i-family"/></svg></div>
+            <div><b>연락처에 있는 번호는 보지 않습니다</b><p>가족 · 지인과 주고받는 문자는 확인 대상이 아닙니다.</p></div></div>
+          <div class="promise"><div class="icbox g sm"><svg class="ic sm"><use href="#i-rules"/></svg></div>
+            <div><b>문자 내용을 저장하지 않습니다</b><p>판정이 끝나면 지웁니다. 기록에는 판정과 날짜만 남습니다.</p></div></div>
+          <div class="promise"><div class="icbox g sm"><svg class="ic sm"><use href="#i-check"/></svg></div>
+            <div><b>언제든 끌 수 있습니다</b><p>설정에서 바로 꺼집니다. 붙잡지 않습니다.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 만드는 방법 · 자녀에게 가는 것 ══ -->
+<section>
+  <div class="wrap">
+    <div class="grid c2" style="gap:48px;align-items:start">
+      <div>
+        <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-chart"/></svg>어떻게 만들고 있나</p>
+        <h2 class="reveal" style="font-size:clamp(24px,2.6vw,32px)">숫자로 확인하면서 고칩니다</h2>
+        <div class="grid reveal d1" style="margin-top:22px;gap:12px">
+          <div class="card mist"><b style="font-size:18px">검증 사례 1,221건으로 매번 대조합니다</b>
+            <p style="margin-top:6px">규칙을 고칠 때마다 전부 다시 돌려, 고치려던 것 말고 다른 것이 달라지지 않았는지 봅니다.</p></div>
+          <div class="card mist"><b style="font-size:18px">직접 확인 오탐률 5.9% → 1.0%</b>
+            <p style="margin-top:6px">공공기관 사칭 가중치를 조정해 낮췄습니다.</p></div>
+          <div class="card mist"><b style="font-size:18px">「모두의 창업」 2차 1라운드 진출</b></div>
+        </div>
+        <p class="src reveal">오탐률은 찬찬 내부 검증 결과이며 독립 검증은 아직 받지 않았습니다.
+          <b>전체 정확도는 아직 재지 않았기 때문에 말씀드리지 않습니다.</b></p>
+      </div>
+      <div>
+        <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-family"/></svg>가족 알림</p>
+        <h2 class="reveal" style="font-size:clamp(24px,2.6vw,32px)">자녀분께는<br>이만큼만 갑니다</h2>
+        <p class="lead reveal d1">부모님의 문자 내용은 자녀에게 가지 않습니다.</p>
+        <div class="grid c2 reveal d2" style="margin-top:22px;gap:12px">
+          <div class="card mist"><div class="icbox g sm"><svg class="ic sm"><use href="#i-check"/></svg></div>
+            <b style="display:block;margin-top:12px;font-size:17px">가는 것</b>
+            <p style="font-size:15.5px;margin-top:5px">부모님 이름 · 위험하다는 사실 · 왜 그렇게 봤는지 · 시각</p></div>
+          <div class="card" style="background:var(--blush);border-color:#F2D6D2">
+            <div class="icbox r sm"><svg class="ic sm"><use href="#i-stop"/></svg></div>
+            <b style="display:block;margin-top:12px;font-size:17px">가지 않는 것</b>
+            <p style="font-size:15.5px;margin-top:5px">문자 내용 · 보낸 번호 · 확인 기록</p></div>
+        </div>
+        <div class="vid reveal d2">
+          <video controls preload="none" poster="video/chanchan-30s-poster.jpg" playsinline>
+            <source src="video/chanchan-30s.mp4" type="video/mp4">
+            이 브라우저에서는 영상을 재생할 수 없습니다.
+          </video>
+        </div>
+        <p class="src reveal" style="text-align:center">30초로 보기</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section class="tint">
+  <div class="wrap" style="max-width:860px">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-q"/></svg>궁금하신 점</p>
+    <h2 class="reveal">많이 물어보시는 것만 모았습니다</h2>
+    <div class="reveal d1" style="margin-top:26px">
+      <details><summary>문자를 다 읽어 가나요?</summary>
+        <div class="ans">아닙니다. 연락처에 저장된 번호에서 온 문자는 보지 않습니다.
+          모르는 번호에서 온 문자만 확인하고, 그것도 판정이 끝나면 지웁니다.</div></details>
+      <details><summary>사기 문자를 막아주나요?</summary>
+        <div class="ans">막지 않습니다. 문자를 지우거나 가로채지 않고, 위험해 보일 때 알려드리기만 합니다.
+          판단은 어르신이 하십니다.</div></details>
+      <details><summary>돈이 드나요?</summary>
+        <div class="ans">어르신이 쓰시는 기능은 모두 무료입니다. 앱 안에 광고도 결제창도 없습니다.
+          비용은 복지관 · 지자체 · 금융기관이 냅니다.</div></details>
+      <details><summary>아이폰에서도 되나요?</summary>
+        <div class="ans">아이폰도 만듭니다. 안드로이드가 먼저일 뿐입니다.
+          아이폰은 다른 앱이 받은 문자를 볼 수 없게 되어 있어, 문자가 오면 먼저 보는 방식은 쓸 수 없습니다.
+          아이폰에서는 문자를 찬찬으로 보내서 확인하는 방식이 됩니다.
+          아래에서 사전 신청을 해 두시면 준비될 때 알려드립니다.</div></details>
+      <details><summary>사기를 100% 잡아주나요?</summary>
+        <div class="ans">아닙니다. 처음 보는 수법은 찾지 못할 수 있습니다.
+          확실하지 않을 때는 답하지 마시고, 문자에 있는 번호 말고 직접 찾으신 공식 번호로 확인하세요.</div></details>
+      <details><summary>지금 받을 수 있나요?</summary>
+        <div class="ans">아직 준비 중입니다. 구글 플레이에 올리기 위한 심사를 받고 있습니다.
+          준비가 끝나면 이 자리에 플레이 스토어 주소를 올리겠습니다.
+          복지관 · 기관에서 먼저 써 보고 싶으시면 아래 「시범 도입 문의」에 남겨 주세요.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 08-a 사전 신청 ══ -->
+<section id="받기">
+  <div class="wrap">
+    <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-check"/></svg>개인 · 가족</p>
+    <h2 class="reveal">출시되면 알려드릴까요?</h2>
+    <p class="lead reveal d1" style="margin-bottom:30px">준비가 끝나는 날 메일 한 통만 보내드립니다. 광고 메일은 보내지 않습니다.</p>
+    <div class="reveal d1" data-waitlist-slot data-placement="footer">
+      <noscript>
+        <p class="nojs">이 브라우저에서는 신청서가 뜨지 않습니다.
+          <a href="mailto:support@chanchan.kr">support@chanchan.kr</a> 로 메일 주시면 출시 때 알려드리겠습니다.</p>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 07 기관 (B2G) ══
+     ⚠️ `id="기관문의"` 는 네비게이션과 띠가 내려보내는 자리입니다.
+        바꾸면 `data-scroll-to` 도 같이 바꾸세요. -->
+<section class="dark" id="기관문의">
+  <div class="wrap">
+    <div class="grid c2" style="gap:48px;align-items:start">
+      <div>
+        <p class="eyebrow reveal"><svg class="ic sm"><use href="#i-gov"/></svg>기관 도입</p>
+        <h2 class="reveal">관내 어르신을<br>함께 지키실 기관을 찾습니다</h2>
+        <p class="lead reveal d1">자료를 보내드리고, 시범 운영을 함께 설계해 드립니다.</p>
+
+        <div class="grid reveal d2" style="margin-top:26px;gap:12px">
+          <div class="card dk"><b style="font-size:17px">누구를 위한 것인가</b>
+            <p style="margin-top:5px">기초 · 광역 지자체, 노인복지관 · 치매안심센터, 금융기관의 소비자보호 · 사회공헌 부서</p></div>
+          <div class="card dk"><b style="font-size:17px">시범은 이렇게 갑니다</b>
+            <p style="margin-top:5px">① 설치 안내(QR 공지 한 장) → ② 동의하신 분들로 사용 집계 →
+              ③ 분기 리포트 → ④ 연간 계약 검토</p></div>
+          <div class="card dk"><b style="font-size:17px">무엇으로 평가하나</b>
+            <p style="margin-top:5px">혼자 설치 완료율 · 14일 유지율 · 경고 뒤 행동률.
+              <b>「방지한 피해액」 같은 계산한 숫자는 드리지 않습니다.</b></p></div>
+          <div class="card dk"><b style="font-size:17px">데이터는 이렇게 다룹니다</b>
+            <p style="margin-top:5px">기관은 <b>집계 숫자만</b> 봅니다. 누가 무엇을 확인했는지는 기관도 찬찬도 알 수 없습니다.</p></div>
+        </div>
+        <p class="src reveal">시범 기관과 협약 사례는 동의를 받은 뒤에만 공개합니다.
+          지금 이 페이지에 적힌 기관 이름은 없습니다.</p>
+      </div>
+
+      <div class="formcard reveal d1">
+        <form data-form="institution" novalidate>
+          <div class="fbody">
+            <h3>시범 도입 문의</h3>
+            <p class="sub">영업일 기준 2일 안에 자료와 함께 연락드리겠습니다.</p>
+
+            <div class="fld">
+              <label for="org-name">기관명 <span class="req">*</span></label>
+              <input type="text" id="org-name" name="org_name" maxlength="120"
+                     autocomplete="organization" data-clarity-mask="true">
+            </div>
+
+            <div class="fld">
+              <label for="org-type">기관 유형 <span class="req">*</span></label>
+              <select id="org-type" name="org_type" data-clarity-mask="true">
+                <option value="">골라 주세요</option>
+                <option value="basic_local_gov">기초지자체</option>
+                <option value="metro_local_gov">광역지자체</option>
+                <option value="welfare_center">노인복지관 · 치매안심센터</option>
+                <option value="financial">금융기관 (은행 · 보험 · 중앙회)</option>
+                <option value="other">그 외</option>
+              </select>
+            </div>
+
+            <div class="fld">
+              <label for="org-dept">담당 부서</label>
+              <input type="text" id="org-dept" name="department" maxlength="120"
+                     data-clarity-mask="true">
+            </div>
+
+            <div class="fld">
+              <label for="org-person">담당자 성함 <span class="req">*</span></label>
+              <input type="text" id="org-person" name="contact_name" maxlength="60"
+                     autocomplete="name" data-clarity-mask="true">
+            </div>
+
+            <div class="fld">
+              <label for="org-mail">이메일 <span class="req">*</span></label>
+              <input type="email" id="org-mail" name="contact_email" maxlength="254"
+                     inputmode="email" autocomplete="email"
+                     placeholder="name@example.com" data-clarity-mask="true">
+            </div>
+
+            <div class="fld">
+              <label for="org-tel">연락처</label>
+              <input type="tel" id="org-tel" name="contact_phone" maxlength="40"
+                     inputmode="tel" autocomplete="tel" data-clarity-mask="true">
+            </div>
+
+            <div class="fld">
+              <label for="org-msg">문의 내용</label>
+              <textarea id="org-msg" name="message" maxlength="500"
+                        data-clarity-mask="true"></textarea>
+              <span class="hint">500자까지 적으실 수 있습니다</span>
+            </div>
+
+            <!-- 사람 눈에 보이지 않는 칸. 채워져 있으면 기계입니다 -->
+            <div class="trap" aria-hidden="true">
+              <label for="org-nick">nickname</label>
+              <input type="text" id="org-nick" name="nickname" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="agree">
+              <label for="org-agree">
+                <input type="checkbox" id="org-agree" name="consent">
+                <span>개인정보 수집·이용에 동의합니다 <span class="req">(필수)</span></span>
+              </label>
+              <ul>
+                <li>수집 항목: 기관명, 담당 부서, 담당자 성함, 이메일, 연락처, 문의 내용</li>
+                <li>이용 목적: 도입 문의 응대 및 자료 발송</li>
+                <li>보유 기간: 문의 종료 후 1년, 또는 삭제 요청 시까지</li>
+              </ul>
+            </div>
+
+            <p class="ferr" role="alert" aria-live="polite" hidden></p>
+
+            <button type="submit" class="btn" data-label="문의 보내기">문의 보내기</button>
+            <noscript>
+              <p class="nojs">이 브라우저에서는 신청서가 보내지지 않습니다.
+                <a href="mailto:support@chanchan.kr">support@chanchan.kr</a> 로 알려 주세요.</p>
+            </noscript>
+          </div>
+
+          <div class="fdone" hidden>
+            <b>문의가 접수되었습니다.</b>
+            <p>영업일 기준 2일 안에 자료와 함께 연락드리겠습니다.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══ 08 바닥 ══ -->
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <b class="fm">찬찬</b>
+        <p style="color:#BFD4C7">급할수록 찬찬히</p>
+        <p style="margin-top:14px;color:#8FA79A;font-size:14.5px">
+          대표 정수진 · 사업자등록 준비 중<br>
+          <a href="mailto:support@chanchan.kr">support@chanchan.kr</a></p>
+      </div>
+      <div>
+        <h4>둘러보기</h4>
+        <ul>
+          <li><a href="#서비스소개">서비스 소개</a></li>
+          <li><a href="#작동방식">작동 방식</a></li>
+          <li><a href="#이용대상">이용 대상</a></li>
+          <li><a href="#기관문의">기관 도입</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>문서</h4>
+        <ul>
+          <li><a href="privacy.html">개인정보처리방침</a></li>
+          <li><a href="terms.html">이용약관</a></li>
+          <li><a href="mailto:support@chanchan.kr">문의하기</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="fine">
+      찬찬은 위험 신호를 찾아 알려드리는 도구이며, <b>메시지의 진위를 보증하지 않습니다.</b>
+      「안전합니다」라는 판정을 제공하지 않습니다.<br>
+      이 페이지의 데모는 설명을 위해 만든 예시이며 실제 검사 결과가 아닙니다. 앱은 출시 준비 중입니다.<br>
+      이 사이트는 광양시청이 만든 <b>광양햇살체</b>를 씁니다 (공공누리 제1유형 · 출처표시).
+    </p>
+  </div>
+</footer>
+
+<dialog id="wip" aria-labelledby="wip-t">
+  <h3 id="wip-t">아직 받으실 수 없습니다</h3>
+  <p>찬찬은 구글 플레이에 올리기 위한 <b>심사를 받고 있습니다.</b>
+    준비가 끝나면 이 사이트에 플레이 스토어 주소를 올리겠습니다.</p>
+  <p style="font-size:15px">복지관 · 기관에서 먼저 써 보고 싶으시면
+    <a href="mailto:support@chanchan.kr">support@chanchan.kr</a> 로 알려 주세요.</p>
+  <button type="button" class="btn" id="wip-close">닫기</button>
+</dialog>
+
+<!--
+  사전 신청서 틀.
+  이 한 벌을 `[data-waitlist-slot]` 에 복사해 넣습니다. site.js 가 복사할 때
+  **id 뒤에 자리 이름을 붙입니다** — 같은 id 가 두 번 있으면 이름표를 눌러도
+  엉뚱한 칸이 잡힙니다. 글을 고치실 때는 **여기만** 고치세요.
+-->
+<template id="tpl-waitlist">
+  <div class="formcard">
+    <form data-form="waitlist" novalidate>
+      <div class="fbody">
+        <h3>출시되면 가장 먼저 알려드릴게요</h3>
+        <p class="sub">준비가 끝나는 날 메일 한 통만 보내드립니다.</p>
+
+        <div class="fld">
+          <label for="wl-mail">이메일 <span class="req">*</span></label>
+          <input type="email" id="wl-mail" name="email" maxlength="254"
+                 inputmode="email" autocomplete="email"
+                 placeholder="name@example.com" data-clarity-mask="true">
+        </div>
+
+        <fieldset class="fld" style="border:0;padding:0">
+          <legend class="q">부모님 휴대폰이 안드로이드인가요? <span class="req">*</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="parent_android" value="yes" data-clarity-mask="true"><span>네</span></label>
+            <label class="opt"><input type="radio" name="parent_android" value="no" data-clarity-mask="true"><span>아니요 (아이폰)</span></label>
+            <label class="opt"><input type="radio" name="parent_android" value="unknown" data-clarity-mask="true"><span>잘 모르겠어요</span></label>
+          </div>
+        </fieldset>
+
+        <!-- ⚠️ **어르신이 쓰시는 기능은 무료입니다.** 여기서 묻는 것은
+             가족 알림을 유료로 할 수 있는지뿐이고, 값을 정한 것이 아닙니다 -->
+        <fieldset class="fld" style="border:0;padding:0">
+          <legend class="q">가족 알림 기능이 유료라면 월 얼마까지 괜찮으세요? <span class="req">*</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="wtp" value="under_3000" data-clarity-mask="true"><span>월 3,000원 이하</span></label>
+            <label class="opt"><input type="radio" name="wtp" value="won_5000" data-clarity-mask="true"><span>월 5,000원</span></label>
+            <label class="opt"><input type="radio" name="wtp" value="won_10000" data-clarity-mask="true"><span>월 1만원</span></label>
+            <label class="opt"><input type="radio" name="wtp" value="free_only" data-clarity-mask="true"><span>유료면 쓰지 않을 것 같아요</span></label>
+          </div>
+        </fieldset>
+
+        <div class="fld">
+          <label for="wl-region">부모님이 사시는 지역</label>
+          <input type="text" id="wl-region" name="region" maxlength="100"
+                 placeholder="예) 고양시 일산동구"
+                 aria-describedby="wl-region-h" data-clarity-mask="true">
+          <span class="hint" id="wl-region-h">지역에 서비스가 들어가면 알려드릴 때 씁니다</span>
+        </div>
+
+        <!-- 사람 눈에 보이지 않는 칸. 채워져 있으면 기계입니다 -->
+        <div class="trap" aria-hidden="true">
+          <label for="wl-nick">nickname</label>
+          <input type="text" id="wl-nick" name="nickname" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="agree">
+          <label for="wl-agree">
+            <input type="checkbox" id="wl-agree" name="consent">
+            <span>개인정보 수집·이용에 동의합니다 <span class="req">(필수)</span></span>
+          </label>
+          <ul>
+            <li>수집 항목: 이메일 주소, 응답 내용</li>
+            <li>이용 목적: 출시 안내 및 사전 신청자 연락</li>
+            <li>보유 기간: 출시 안내 후 6개월, 또는 삭제 요청 시까지</li>
+            <li>동의를 거부하실 수 있으며, 거부하시면 사전 신청이 어렵습니다</li>
+          </ul>
+        </div>
+
+        <p class="ferr" role="alert" aria-live="polite" hidden></p>
+
+        <button type="submit" class="btn" data-label="사전 신청하기">사전 신청하기</button>
+      </div>
+
+      <div class="fdone" hidden>
+        <b>신청이 접수되었습니다.</b>
+        <p>출시 준비가 끝나면 알려드리겠습니다.<br>광고 메일은 보내지 않습니다.</p>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 스크롤하면 나타나기 ── */
+  var items = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    [].forEach.call(items, function (el) { el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .12 });
+    [].forEach.call(items, function (el) { io.observe(el); });
+  }
+
+  /* ── 히어로 폰 들어오기 · 그다음 천천히 떠 있기 ── */
+  var hero = document.querySelector('.hero');
+  if (hero) {
+    hero.classList.add('in');
+    /* 떠 있기는 **들어오기가 끝난 뒤에** 겁니다. 같이 걸면 서로 덮어씁니다 */
+    if (!reduce) setTimeout(function () { hero.classList.add('idle'); }, 1100);
+  }
+
+  /* ── 맨 위 띠 — 첫 화면을 지나면 바탕을 채웁니다 ── */
+  var nav = document.getElementById('nav');
+  var onScroll = function () { nav.classList.toggle('solid', window.scrollY > 40); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ── 눌러서 보는 데모 ───────────────────────────────────
+     ⚠️ **실제로 검사하지 않습니다.** 미리 적어 둔 예시를 보여 줄 뿐입니다.
+        결과 문구를 바꿀 때는 앱의 판정 문구(res/values/strings.xml)와
+        어긋나지 않게 하세요. 「안전합니다」는 어느 쪽에도 없습니다. */
+  var CASES = {
+    danger: {
+      lamp: 'd', lit: 'var(--alert)', cls: 'v-danger',
+      title: '위험합니다', sub: '답장하거나 돈을 보내지 마세요.',
+      why: ['수사기관을 사칭하고 있어요.', '「안전계좌」로 돈을 옮기라고 재촉해요.', '모르는 번호에서 왔어요.'],
+      todo: ['답하지 마세요', '112에 전화해서 신고하세요', '가족에게 알리세요']
+    },
+    caution: {
+      lamp: 'c', lit: '#8A4E12', cls: 'v-caution',
+      title: '조심하세요', sub: '답하지 마세요.',
+      why: ['인터넷 주소를 누르라고 해요.', '보낸 곳이 분명하지 않아요.'],
+      todo: ['답하지 마세요', '되물을 말을 보세요', '가족에게 물어보세요']
+    },
+    unclear: {
+      lamp: 'u', lit: '#4A554E', cls: 'v-unclear',
+      title: '답하지 않으셔도 됩니다', sub: '받기만 하면 되는 문자입니다.',
+      why: ['아는 사기 수법과 맞는 것을 찾지 못했습니다.', '안전하다는 뜻은 아닙니다. 처음 보는 수법은 찾지 못할 수 있어요.'],
+      todo: ['답하지 않으셔도 됩니다', '문자 속 번호와 주소는 누르지 마세요', '걱정되시면 기관 대표번호를 직접 찾아 전화하세요']
+    }
+  };
+  var LAMPS = [
+    ['d', '위험합니다', 'i-bang'],
+    ['c', '조심하세요', 'i-tri'],
+    ['u', '답하지 않으셔도 됩니다', 'i-qmark']
+  ];
+  function signalHTML(on, big){
+    return '<div class="signal' + (big ? ' big' : '') + '" role="img" aria-label="판정 신호등 — ' +
+      (LAMPS.filter(function (l) { return l[0] === on; })[0] || ['', ''])[1] + '">' +
+      LAMPS.map(function (l) {
+        return '<div class="lamp ' + l[0] + (l[0] === on ? ' on' : '') + '">' +
+          '<i class="tl ' + l[0] + '" aria-hidden="true"><s></s><s></s><s></s></i>' +
+          '<b>' + l[1] + '</b></div>';
+      }).join('') + '</div>';
+  }
+  var picked = 'danger';
+  var scr = document.getElementById('scr'), body = document.getElementById('scrBody');
+  var runBtn = document.getElementById('runDemo');
+
+  [].forEach.call(document.querySelectorAll('.msg'), function (b) {
+    b.addEventListener('click', function () {
+      picked = b.getAttribute('data-case');
+      [].forEach.call(document.querySelectorAll('.msg'), function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+    });
+  });
+
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+
+  /* Figma 보드(Full Hi-Fi Product Screens)의 결과 화면과 같은 차례로 그립니다 —
+     신호등 → 판정 카드 → 왜 이렇게 나왔나요 → 번호 매긴 할 일. */
+  function result(c) {
+    var why = c.why.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('');
+    var todo = c.todo.map(function (w, i) {
+      return '<li><em>' + (i + 1) + '</em><span>' + esc(w) + '</span></li>';
+    }).join('');
+    return '<div class="fade">' +
+      signalHTML(c.lamp, false) +
+      '<div class="verdict ' + c.cls + '" style="margin-top:16px">' +
+        '<b>' + esc(c.title) + '</b><span>' + esc(c.sub) + '</span></div>' +
+      '<p style="font-size:14px;color:var(--muted);margin:18px 0 8px"><b>왜 이렇게 나왔나요</b></p>' +
+      '<ul class="todo">' + why + '</ul>' +
+      '<p style="font-size:14px;color:var(--muted);margin:18px 0 8px"><b>이렇게 하세요</b></p>' +
+      '<ol class="stepsnum" style="--lit:' + c.lit + '">' + todo + '</ol>' +
+      '<p style="font-size:13px;color:var(--muted);margin-top:18px">' +
+        '예시 화면입니다. <b>안전하다는 뜻이 아닙니다.</b></p>' +
+      '</div>';
+  }
+
+  /* ── 판정 구간의 신호등 ── */
+  var TIER = {
+    d: ['위험합니다', '답장하거나 돈을 보내지 마세요.',
+        ['답하지 마세요', '112에 전화해서 신고하세요', '가족에게 알리세요'], 'var(--alert)'],
+    c: ['조심하세요', '답하지 마세요.',
+        ['답하지 마세요', '되물을 말을 보세요', '가족에게 물어보세요'], '#8A4E12'],
+    u: ['답하지 않으셔도 됩니다', '받기만 하면 되는 문자입니다.',
+        ['답하지 않으셔도 됩니다', '문자 속 번호와 주소는 누르지 마세요',
+         '걱정되시면 기관 대표번호를 직접 찾아 전화하세요'], '#4A554E']
+  };
+  var tierInfo = document.getElementById('tierInfo');
+  if (tierInfo) {
+    var showTier = function (k) {
+      var t = TIER[k];
+      tierInfo.innerHTML = '<b style="font-size:19px">' + esc(t[0]) + '</b>' +
+        '<p style="margin-top:4px">' + esc(t[1]) + '</p>' +
+        '<p style="font-size:14px;color:var(--muted);margin:16px 0 8px"><b>이렇게 하세요</b></p>' +
+        '<ol class="stepsnum" style="--lit:' + t[3] + '">' +
+        t[2].map(function (w, i) {
+          return '<li><em>' + (i + 1) + '</em><span>' + esc(w) + '</span></li>';
+        }).join('') + '</ol>';
+    };
+    [].forEach.call(document.querySelectorAll('#tier .lamp'), function (b) {
+      b.addEventListener('click', function () {
+        [].forEach.call(document.querySelectorAll('#tier .lamp'), function (o) {
+          o.classList.toggle('on', o === b);
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        showTier(b.getAttribute('data-tier'));
+      });
+    });
+    showTier('d');
+  }
+
+  var busy = false;
+  function run() {
+    if (busy) return;
+    busy = true;
+    runBtn.disabled = true;
+    var c = CASES[picked];
+    if (reduce) {
+      body.innerHTML = result(c);
+      busy = false; runBtn.disabled = false; scr.classList.add('shown');
+      return;
+    }
+    scr.classList.remove('shown');
+    body.innerHTML = '<div class="fade"><p style="font-size:16px"><b>확인하고 있어요</b></p>' +
+      '<p style="font-size:14.5px;color:var(--muted);margin:6px 0 14px">' +
+      '보낸 사람과 요구하는 것을 살펴보고 있어요.</p>' +
+      '<div class="scanbar"><i></i></div></div>';
+    scr.classList.add('scanning');
+    setTimeout(function () {
+      scr.classList.remove('scanning');
+      scr.classList.add('shown');
+      body.innerHTML = result(c);
+      busy = false; runBtn.disabled = false;
+    }, 1150);
+  }
+  if (runBtn) runBtn.addEventListener('click', run);
+
+  /* ── 「출시 준비 중」 안내 ── */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('[data-wip]') : null;
+    if (t) {
+      var box = document.getElementById('wip');
+      if (box && typeof box.showModal === 'function') { if (!box.open) box.showModal(); return; }
+      var end = document.getElementById('받기');
+      if (end) end.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    var box2 = document.getElementById('wip');
+    if (box2 && box2.open && (e.target.id === 'wip-close' || e.target === box2)) box2.close();
+  });
+})();
+</script>
+
+<script src="config.js"></script>
+<!-- ⚠️ 위 template 과 config.js 보다 **뒤에** 와야 합니다 -->
+<script src="site.js"></script>
+
+</body>
+</html>

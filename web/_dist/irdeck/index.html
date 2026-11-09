@@ -1,0 +1,1973 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>찬찬 IR — 급할수록 찬찬히</title>
+<meta name="description" content="찬찬 IR 덱. 모르는 번호로 온 문자를 어르신 폰 안에서 먼저 보고, 막고 해결하는 데까지 함께 갑니다.">
+
+<!--
+  <svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> 검색에 안 잡히게 해 두었습니다 (noindex).
+     주소를 아는 사람은 열 수 있지만 구글 검색에는 나오지 않습니다.
+     가격 가설 · 재무 가정 · 「부족한 것」이 들어 있는 투자 자료라서입니다.
+     검색에 나오게 하려면 아래 robots 줄을 지우세요.
+-->
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../favicon.png">
+
+<!--
+  ── 이 페이지의 짜임 ──────────────────────────────────────
+
+  **무대(1280×720)를 통째로 확대·축소합니다.** 글을 화면 폭에 흘려 넣지
+  않습니다 — 그렇게 하면 창 크기마다 줄바꿈과 배치가 달라져서, 어떤 폭에서는
+  표가 눌리고 어떤 폭에서는 글이 겹칩니다(v1 에서 실제로 그랬습니다).
+  지금은 어느 화면에서 봐도 **같은 그림**이고, 크기만 달라집니다.
+
+  <svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> 그래서 한 장에 들어갈 양이 **720px 로 정해져 있습니다.** 내용을 더
+     넣어야 하면 글을 줄이지 말고 **장을 나누거나 눌러서 펼치게** 만드세요.
+     넘치면 잘립니다.
+
+  <svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> 숫자 원본은 `pitch/build_ir.js` 입니다. 고칠 때는 **거기와 여기를 같이**
+     고칩니다 (`.claude/rules/docs-and-claims.md`).
+     부록 출처 표만 `python web/build_irdeck.py` 가 만듭니다.
+-->
+<style>
+:root{
+  /* 브리프(2026-11-09)에 못 박힌 토큰입니다. 바꾸지 마세요. */
+  --green:#2F6B4F; --deep:#183F30; --leaf:#4F8F69; --mist:#E9F2EC; --mist2:#D7E8DD;
+  --coral:#D96B63; --brick:#B84A44; --blush:#FBE9E7; --amber:#B7791F; --amberBg:#FDF3E3;
+  --ivory:#FFFDFC; --oat:#F7F3EA; --ink:#24332B; --slate:#5E6B63; --line:#DDE7E0;
+  --card:#FFFFFF; --dark:#24332B; --dark2:#2F4238; --onDark:#CFE0D6; --onDark2:#A9C9B6;
+  --bar:60px;
+  --ease:cubic-bezier(.76,0,.24,1);
+  --rise:cubic-bezier(.2,.85,.25,1);
+}
+/* ── 광양햇살체 한 벌로 ──────────────────────────────────────
+   브리프(2026-11-09) 제1 비협상 조건: **모든 글자**를 광양햇살체로.
+   Regular · Bold 두 벌을 woff2 로 싣습니다(각 ~300KB, ttf 의 1/3).
+
+   ⚠️ 이 글꼴이 **덮지 못하는 글자**가 있습니다 — `₩` `−`(U+2212)
+      `☰` `⚠` 는 빠져 있어 그 글자만 다른 글꼴로 튑니다. 쓰지 마세요.
+      `-`(ASCII) · 「원」 · 아이콘(`#i-warn` 등)으로 대신합니다.
+      이모지는 일부러 기기 기본 글꼴에 맡깁니다(용량 0).
+   출처표시: 광양시청 광양햇살체 (공공누리 제1유형). */
+@font-face{
+  font-family:'Gwangyang';
+  src:url('../fonts/Gwangyang-Regular.woff2') format('woff2');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Gwangyang';
+  src:url('../fonts/Gwangyang-Bold.woff2') format('woff2');
+  font-weight:700; font-style:normal; font-display:swap;
+}
+:root{
+  --font:'Gwangyang','Malgun Gothic','맑은 고딕',-apple-system,
+         BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font);
+  background:#121A16; color:var(--ink); line-height:1.6; font-weight:400;
+  -webkit-font-smoothing:antialiased; word-break:keep-all; overflow-wrap:break-word;
+}
+h1,h2,h3,h4,b,strong,.gw{font-weight:700}
+input,select,textarea{font-family:var(--font)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+table{border-collapse:collapse;width:100%}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+
+/* ══ 상단 개요 바 ══════════════════════════════════════════ */
+.topbar{
+  position:fixed;inset:0 0 auto 0;height:var(--bar);z-index:40;
+  display:flex;align-items:center;gap:16px;padding:0 18px;
+  background:#1A2520;border-bottom:1px solid rgba(169,201,182,.18);color:var(--ivory);
+}
+.brand{display:flex;align-items:baseline;gap:9px;flex:0 0 auto}
+.brand b{font-size:20px}
+.brand span{font-size:12px;color:var(--onDark2)}
+.map{display:flex;align-items:center;gap:14px;flex:1 1 auto;min-width:0;overflow:hidden}
+.sec{display:flex;flex-direction:column;gap:5px;min-width:0}
+.sec > em{font-style:normal;font-size:10.5px;letter-spacing:.05em;color:var(--onDark2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticks{display:flex;gap:3px}
+.tick{position:relative;height:7px;width:17px;border-radius:4px;
+  background:rgba(207,224,214,.24);transition:background .25s,width .25s,transform .25s}
+.tick:hover{background:rgba(207,224,214,.6);transform:scaleY(1.5)}
+.tick.seen{background:rgba(169,201,182,.62)}
+.tick.on{background:var(--coral);width:32px}
+.tick .tip{position:absolute;top:17px;left:50%;transform:translate(-50%,4px);
+  background:var(--ivory);color:var(--ink);font-size:12px;font-weight:700;padding:5px 9px;
+  border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;z-index:5;
+  transition:opacity .16s,transform .16s;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.tick:hover .tip{opacity:1;transform:translate(-50%,0)}
+.tick .tip::before{content:attr(data-n) '. '}
+.tools{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.tool{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:9px;
+  font-size:13px;font-weight:700;color:var(--onDark);
+  border:1px solid rgba(169,201,182,.28);transition:background .18s,color .18s}
+.tool:hover{background:rgba(169,201,182,.16);color:var(--ivory)}
+.counter{font-size:13px;color:var(--onDark2);min-width:56px;text-align:right;font-variant-numeric:tabular-nums}
+.counter b{color:var(--ivory);font-size:16px}
+.progress{position:fixed;top:var(--bar);left:0;height:2px;background:var(--coral);z-index:41;
+  transition:width .6s var(--ease)}
+
+/* ══ 무대 — 비율 고정 ══════════════════════════════════════
+   화면이 넓어지면 무대가 커질 뿐, 배치는 그대로입니다. */
+.deck{position:fixed;top:var(--bar);left:0;right:0;bottom:0;overflow:hidden}
+/* ⚠️ 가운데 맞추기를 **그리드에 맡기지 마세요.** 창이 1280×720 보다 작으면
+   무대가 그리드보다 커지고, 그때 브라우저는 가운데가 아니라 **시작점에
+   붙입니다** — 무대가 오른쪽 아래로 밀려 나갑니다 (2026-11-09 에 겪음).
+   좌표로 직접 가운데에 둡니다. */
+.stage{
+  width:1280px;height:720px;overflow:hidden;
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center;
+  border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.45);background:var(--oat)
+}
+.track{display:flex;height:100%;width:max-content;will-change:transform;
+  transition:transform .6s var(--ease)}
+.s{
+  width:1280px;height:720px;flex:0 0 1280px;overflow:hidden;
+  display:flex;flex-direction:column;gap:20px;
+  padding:42px 56px 30px;background:var(--oat)
+}
+.s.ivory{background:var(--ivory)}
+.s.dark{background:var(--dark);color:var(--ivory)}
+.s.dark .kicker{color:var(--onDark2)}
+.s.dark .note{color:#8FA79A}
+.s.dark h2{color:var(--ivory)}
+.s > header{flex:0 0 auto}
+.s > .body{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:18px;justify-content:center}
+.s > .note{flex:0 0 auto}
+/* ⚠️ 위의 `.s > .body` 가 클래스 둘이라 `.grid`·`.split`(하나)를 **이깁니다.**
+   본문 자체에 레이아웃 클래스를 붙이면 가로 배치가 통째로 세로로 쌓입니다.
+   새 레이아웃 클래스를 본문에 바로 붙일 때는 여기에도 적으세요. */
+.s > .body.grid,.s > .body.split{display:grid}
+
+/* ── 글자 크기 (무대 안 기준) ── */
+/* 밝은 바탕 위 글자라 --leaf(3.5:1) 로는 모자랍니다. --green 은 5.4:1 */
+.kicker{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:var(--green);
+  letter-spacing:.04em;margin-bottom:6px;font-family:'Gwangyang',sans-serif}
+h2{font-size:36px;line-height:1.25;letter-spacing:-.01em}
+h2.sm{font-size:31px}
+.lead{font-size:21px;line-height:1.55}
+p,li,td,th{font-size:18px}
+.sm{font-size:16px}
+.note{font-size:14px;color:var(--slate);line-height:1.5}
+.big{font-size:52px;line-height:1.05;display:block;letter-spacing:-.02em}
+.big.s2{font-size:40px}
+.big.s3{font-size:30px}
+/* ⚠️ **글자색 이름이 배경 수식어와 겹치면 안 됩니다.** `.card.amb`(배경)과
+   `.amb`(글자색)가 같은 이름이라 호박 바탕에 호박 글씨가 났습니다 —
+   배경 쪽을 `.amberbg` 로 바꿨습니다 (2026-11-09).
+   ⚠️ 값도 **글자용**입니다. `--amber`·`--coral` 은 아이콘·면에는 좋지만
+   작은 글씨로는 4.5:1 을 못 넘깁니다. */
+.brick{color:var(--brick)} .grn{color:var(--green)} .amb{color:#8A4E12}
+.slate{color:var(--slate)} .cor{color:var(--coral)}
+.s:not(.dark) .cor{color:var(--brick)}
+/* 어두운 카드 위에서는 --coral 이 2.1:1 밖에 안 됩니다. 한 단 밝게 */
+.s.dark .cor,.card.dk .cor{color:#F2A9A2}
+
+/* ── 레이아웃 ── */
+.grid{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.c5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.split{display:grid;gap:22px;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start}
+.split.even{grid-template-columns:repeat(2,minmax(0,1fr))}
+.split.wide{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+.rows{display:flex;flex-direction:column;gap:12px}
+.fill{flex:1 1 auto;min-height:0}
+.mid{display:flex;align-items:center;gap:14px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.card.mist{background:var(--mist);border-color:transparent}
+.card.oat{background:var(--oat);border-color:transparent}
+.card.amberbg{background:var(--amberBg);border-color:#EFD9B4}
+.card.blush{background:var(--blush);border-color:#F2D6D2}
+.card.dk{background:var(--dark2);border-color:transparent;color:var(--ivory)}
+.card.dk p,.card.dk li{color:var(--onDark)}
+.card h3{font-size:21px;margin-bottom:6px}
+.card h4{font-size:17px;margin-bottom:5px}
+.lab{font-size:14px;font-weight:700;color:var(--slate);letter-spacing:.03em;
+  font-family:'Gwangyang',sans-serif}
+ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+ul li{position:relative;padding-left:17px;line-height:1.5}
+ul li::before{content:'';position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:50%;
+  background:var(--leaf)}
+.card.dk ul li::before{background:var(--coral)}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:99px;
+  font-size:13px;font-weight:700;white-space:nowrap;font-family:'Gwangyang',sans-serif}
+/* 11~13px 짜리 작은 글씨라 색을 한 단 더 눌러야 4.5:1 을 넘깁니다 */
+.chip.done{background:var(--mist);color:var(--green)}
+.chip.part{background:var(--amberBg);color:#7A440F}
+.chip.plan{background:var(--blush);color:#9E3832}
+.chip.dk{background:rgba(169,201,182,.18);color:var(--onDark2)}
+
+/* ── 아이콘 ── */
+.ic{width:26px;height:26px;flex:0 0 auto;stroke:currentColor;fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ic.sm{width:20px;height:20px}
+.ic.lg{width:38px;height:38px;stroke-width:1.7}
+.icbox{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;flex:0 0 auto}
+.icbox.g{background:var(--mist);color:var(--green)}
+.icbox.r{background:var(--blush);color:var(--brick)}
+.icbox.a{background:var(--amberBg);color:var(--amber)}
+.icbox.gray{background:#EEF1EF;color:var(--slate)}
+.icbox.d{background:rgba(169,201,182,.16);color:var(--onDark2)}
+.icbox.sm{width:40px;height:40px;border-radius:11px}
+
+/* ── 표 ── */
+.tbl{font-size:16px;background:var(--card);border-radius:13px;overflow:hidden;border:1px solid var(--line)}
+.tbl th{background:var(--green);color:#fff;font-size:15px;text-align:left;padding:10px 13px;
+  font-weight:700;font-family:'Gwangyang',sans-serif}
+.tbl.ink th{background:var(--ink)}
+.tbl td{padding:9px 13px;border-top:1px solid var(--line);vertical-align:middle;line-height:1.45;font-size:16px}
+.tbl tbody tr{transition:background .18s}
+.tbl tbody tr:hover{background:var(--mist)}
+.tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.k{font-weight:700;font-family:'Gwangyang',sans-serif}
+.tbl .gr{color:var(--green);font-weight:700}
+.tbl .br{color:var(--brick)}
+.pane{overflow:auto;border-radius:13px}
+.pane::-webkit-scrollbar{width:9px}
+.pane::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.pane thead th{position:sticky;top:0;z-index:2}
+
+/* ── 사진 ── */
+.shot{text-align:center}
+.shot img{display:block;border-radius:16px;border:1px solid var(--line);background:#fff;
+  cursor:zoom-in;transition:transform .32s var(--rise),box-shadow .32s}
+.shot img:hover{transform:translateY(-7px) scale(1.025);box-shadow:0 20px 40px rgba(36,51,43,.2)}
+/* ⚠️ 결과 화면은 **세로로 아주 깁니다**(414×1512). 그대로 두면 장을 넘칩니다.
+   `.crop` 으로 위쪽만 보여 주고, 「크게 보기」에서는 전체가 뜹니다. */
+.shot img.crop{height:430px;object-fit:cover;object-position:top center}
+.shot figcaption{font-size:14px;font-weight:700;color:var(--slate);margin-top:9px}
+
+/* ══ 나타나기 ══════════════════════════════════════════════ */
+[data-anim]{opacity:0}
+.s.is-active [data-anim]{animation:rise .6s var(--rise) both;animation-delay:calc(var(--d,0)*70ms)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.s.is-active [data-anim="pop"]{animation-name:pop}
+@keyframes pop{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.s.is-active [data-anim="left"]{animation-name:fromL}
+@keyframes fromL{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+.s.is-active [data-anim="right"]{animation-name:fromR}
+@keyframes fromR{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+
+/* ══ 눌러 보는 것 ══════════════════════════════════════════ */
+.tap{cursor:pointer;position:relative;transition:transform .25s var(--rise),box-shadow .25s,border-color .2s}
+.tap:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(36,51,43,.14)}
+.tap::after{content:'＋';position:absolute;top:13px;right:15px;font-size:15px;color:var(--leaf);
+  opacity:.6;transition:transform .25s,opacity .2s}
+.tap.open::after{transform:rotate(45deg);opacity:1}
+.tap .more{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);
+  font-size:15px;color:var(--slate);line-height:1.55}
+.tap.open .more{display:block;animation:rise .35s var(--rise) both}
+.tap .more b{color:var(--green)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.f{padding:7px 15px;border-radius:99px;border:1px solid var(--line);background:var(--card);
+  font-size:15px;font-weight:700;color:var(--slate);transition:all .2s;font-family:'Gwangyang',sans-serif}
+.f:hover{border-color:var(--leaf);color:var(--green)}
+.f.on{background:var(--green);border-color:var(--green);color:#fff}
+.hide{display:none !important}
+
+/* ══ 움직이는 도표 ═════════════════════════════════════════ */
+/* 흐르는 점 — 파이프라인 */
+.flowline{position:relative;height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.s.is-active .flowline::after{content:'';position:absolute;top:0;left:-34%;width:34%;height:100%;
+  background:linear-gradient(90deg,transparent,var(--leaf),transparent);animation:flow 2.4s linear infinite}
+@keyframes flow{to{left:110%}}
+
+/* 막대 */
+.bars{display:flex;align-items:stretch;gap:16px;height:100%}
+.barwrap{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+.barwrap .v{font-size:17px;font-weight:700;color:var(--green);font-family:'Gwangyang',sans-serif}
+.barwrap .col{flex:1;min-height:0;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.bar{width:100%;max-width:74px;border-radius:10px 10px 4px 4px;background:var(--green);height:0;
+  transition:height 1s var(--rise),background .2s}
+.s.is-active .bar{height:var(--h)}
+.barwrap:hover .bar{background:var(--leaf)}
+.barwrap.on .bar{background:var(--coral)}
+.barwrap .y{font-size:16px;color:var(--slate);font-weight:700;font-family:'Gwangyang',sans-serif}
+.barwrap.bep .y::after{content:' ★';color:var(--brick)}
+
+/* 가로 막대 */
+.hbar{display:grid;grid-template-columns:120px minmax(0,1fr) 92px;align-items:center;gap:12px}
+.hbar .t{font-size:16px;font-weight:700;font-family:'Gwangyang',sans-serif}
+.hbar .rail{height:26px;background:#EEF1EF;border-radius:8px;overflow:hidden}
+.hbar .fillbar{height:100%;width:0;border-radius:8px;background:var(--green);
+  transition:width 1.1s var(--rise)}
+.s.is-active .hbar .fillbar{width:var(--w)}
+.hbar .n{font-size:16px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;
+  font-family:'Gwangyang',sans-serif}
+
+/* 단계 흐름 */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;position:relative}
+.steps::before{content:'';position:absolute;left:8%;right:8%;top:30px;height:3px;background:var(--line);z-index:0}
+.s.is-active .steps::before{animation:grow 1.1s var(--rise) both}
+@keyframes grow{from{right:84%}to{right:8%}}
+.step{position:relative;z-index:1;background:var(--card);border:2px solid var(--line);border-radius:14px;
+  padding:14px 12px;cursor:pointer;text-align:center;transition:all .25s var(--rise)}
+.step:hover{transform:translateY(-5px);border-color:var(--leaf)}
+.step.on{border-color:var(--coral);background:var(--blush)}
+.step .icbox{margin:0 auto 9px}
+.step b{display:block;font-size:17px;margin-bottom:4px}
+.step span{font-size:14px;color:var(--slate);line-height:1.4;display:block}
+
+/* 동심원 (시장) */
+.rings{position:relative;width:392px;height:392px;margin:0 auto}
+.ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;
+  border-radius:50%;display:grid;place-items:start center;padding-top:12px;cursor:pointer;
+  transition:transform .3s var(--rise),box-shadow .25s}
+.s.is-active .ring{animation:ringIn .75s var(--rise) both}
+.s.is-active .ring.r1{animation-delay:.1s}
+.s.is-active .ring.r2{animation-delay:.3s}
+.s.is-active .ring.r3{animation-delay:.5s}
+@keyframes ringIn{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.ring.r1{width:392px;height:392px;background:var(--mist)}
+.ring.r2{width:266px;height:266px;background:var(--mist2)}
+/* --leaf 위의 흰 글씨는 3.8:1 뿐입니다. --green 이면 5.4:1 */
+.ring.r3{width:152px;height:152px;background:var(--green);color:#fff}
+.ring:hover{box-shadow:0 0 0 4px rgba(79,143,105,.35)}
+.ring.sel{box-shadow:0 0 0 4px var(--coral)}
+/* 글상자가 바깥 고리의 「띠」 안에 들어가야 합니다 — 안 그러면 안쪽 원에 가립니다 */
+.ring span{display:block;text-align:center;line-height:1.2}
+.ring b{display:block;font-size:13px;letter-spacing:.05em}
+.ring i{font-style:normal;display:block;font-size:17px;font-family:'Gwangyang',sans-serif;margin-top:1px}
+.ring.r3{place-items:center;padding-top:0}
+
+/* 10초 되돌리기 고리 */
+.ringtimer{width:132px;height:132px}
+.ringtimer circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ringtimer .bg{stroke:var(--line)}
+.ringtimer .fg{stroke:var(--coral);stroke-dasharray:364;stroke-dashoffset:0;
+  transform:rotate(-90deg);transform-origin:50% 50%}
+.s.is-active .ringtimer .fg{animation:count 10s linear forwards}
+@keyframes count{to{stroke-dashoffset:364}}
+
+/* 돈 흐름 */
+.money{display:grid;grid-template-columns:1fr 64px 1fr 64px 1fr;align-items:center;gap:0}
+.arrowline{position:relative;height:3px;background:var(--line)}
+.arrowline::after{content:'';position:absolute;right:-2px;top:50%;transform:translateY(-50%);
+  border-left:9px solid var(--leaf);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.s.is-active .arrowline{animation:grow2 .8s var(--rise) both}
+@keyframes grow2{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}
+.arrowline em{position:absolute;left:50%;top:-25px;transform:translateX(-50%);font-style:normal;
+  font-size:13px;font-weight:700;color:var(--onDark2);white-space:nowrap}
+
+/* 포지셔닝 지도 */
+.posmap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.posmap svg{width:100%;height:auto;display:block}
+.dot{cursor:pointer;transition:r .2s var(--rise)}
+.dot:hover{r:14}
+.dot.sel{stroke:var(--ink);stroke-width:3}
+.pminfo{margin-top:11px;background:var(--mist);border-radius:12px;padding:12px 15px;font-size:16px;
+  min-height:70px}
+.pminfo b{display:block;font-size:18px;margin-bottom:3px}
+
+/* 표지 */
+.cover{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:30px;align-items:center;
+  height:100%}
+.cover h1{font-size:104px;color:var(--ivory);line-height:.95;letter-spacing:-.03em}
+.cover .slogan{font-size:46px;color:var(--coral);margin-top:12px}
+.cover .lead{font-size:19px;color:var(--onDark);margin-top:24px;line-height:1.75;max-width:50ch}
+.cover .eyebrow{font-size:16px;font-weight:700;color:var(--onDark2);margin-bottom:14px;
+  font-family:'Gwangyang',sans-serif}
+.cover .ph{justify-self:center;position:relative}
+.cover .ph img{width:262px;height:430px;object-fit:cover;object-position:top center;
+  display:block;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.s.is-active .cover .ph img{animation:float 5.5s ease-in-out 1.2s infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+.cover figcaption{font-size:12.5px;color:var(--onDark2);margin-top:11px;line-height:1.5;
+  text-align:center;max-width:262px}
+
+/* ══ 신호등 — Figma 보드의 판정 세 등급 ══════════════════════
+   ⚠️ **색만으로 뜻을 전하지 않습니다.** 램프마다 글자가 붙고, 켜진 램프는
+      테두리 · 그림자 · 글자 굵기로도 구분됩니다 (흑백 출력 기준). */
+.signal{display:flex;gap:12px}
+.signal .lamp{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:16px 10px;border-radius:16px;background:#EFF1EF;border:2px solid transparent;
+  transition:background .35s,border-color .35s,transform .35s var(--rise)}
+.signal .lamp i{width:46px;height:46px;border-radius:50%;background:#CFD6D1;color:#fff;
+  display:grid;place-items:center;transition:background .35s,box-shadow .35s}
+.signal .lamp i svg{width:27px;height:27px;stroke:currentColor;fill:none;stroke-width:2.1;
+  stroke-linecap:round;stroke-linejoin:round}
+.signal .lamp b{font-size:15px;color:var(--slate);text-align:center;line-height:1.3;font-weight:400}
+.signal .lamp.on{transform:translateY(-4px)}
+.signal .lamp.on b{color:var(--ink);font-weight:700}
+.signal .lamp.d.on{background:var(--blush);border-color:#E7B8B3}
+.signal .lamp.d.on i{background:var(--brick);box-shadow:0 0 0 7px rgba(184,74,68,.15)}
+.signal .lamp.c.on{background:var(--amberBg);border-color:#E3C68E}
+.signal .lamp.c.on i{background:#8A4E12;box-shadow:0 0 0 7px rgba(138,78,18,.15)}
+.signal .lamp.u.on{background:#E9ECEA;border-color:#C6CFC9}
+.signal .lamp.u.on i{background:#4A554E;box-shadow:0 0 0 7px rgba(74,85,78,.15)}
+button.lamp{cursor:pointer}
+
+/* 판정 3등급 */
+.vd{border-radius:14px;padding:14px 17px;border:2px solid;display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:transform .25s var(--rise)}
+.vd:hover{transform:translateX(6px)}
+.vd b{display:block;font-size:21px}
+.vd span{font-size:15px;color:var(--slate)}
+.vd.d{background:var(--blush);border-color:#F2D6D2}.vd.d b{color:#A63F3A}
+.vd.c{background:var(--amberBg);border-color:#EFD9B4}.vd.c b{color:#8A4E12}
+.vd.u{background:#F1F3F1;border-color:#DDE7E0}.vd.u b{color:#3F4A43}
+.vd.on{box-shadow:0 0 0 3px var(--coral)}
+
+/* ══ 화살표 · 겹창 ═════════════════════════════════════════ */
+.arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:35;width:48px;height:72px;
+  border-radius:13px;display:grid;place-items:center;background:rgba(255,253,252,.93);
+  border:1px solid var(--line);box-shadow:0 10px 24px rgba(0,0,0,.3);font-size:23px;color:var(--green);
+  transition:transform .25s var(--rise),opacity .2s,background .2s}
+.arrow:hover{background:#fff;transform:translateY(-50%) scale(1.08)}
+.arrow.prev{left:14px}.arrow.next{right:14px}
+.arrow[disabled]{opacity:0;pointer-events:none}
+.hintpulse{animation:nudge 2.4s ease-in-out 3}
+@keyframes nudge{0%,100%{transform:translateY(-50%)}50%{transform:translateY(-50%) translateX(7px)}}
+
+.sheet{position:fixed;inset:0;z-index:60;background:rgba(18,26,22,.95);backdrop-filter:blur(6px);
+  padding:30px;overflow:auto;display:none}
+.sheet.show{display:block;animation:fade .25s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet h3{color:var(--ivory);font-size:22px;margin-bottom:4px}
+.sheet .sub{color:var(--onDark2);font-size:14px;margin-bottom:20px}
+.toclist{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));max-width:1200px}
+.toc{text-align:left;background:rgba(207,224,214,.09);border:1px solid rgba(169,201,182,.22);
+  border-radius:12px;padding:12px 14px;color:var(--ivory);transition:all .2s}
+.toc:hover{background:rgba(169,201,182,.2);transform:translateY(-3px)}
+.toc.on{border-color:var(--coral);background:rgba(217,107,99,.2)}
+.toc em{font-style:normal;display:block;font-size:11px;color:var(--onDark2);margin-bottom:3px}
+.toc b{font-size:15px;display:block}
+.closer{position:absolute;top:20px;right:22px;font-size:15px;color:var(--ivory);
+  border:1px solid rgba(169,201,182,.32);border-radius:9px;padding:8px 13px}
+.lightbox{position:fixed;inset:0;z-index:70;background:rgba(18,26,22,.96);display:none;
+  align-items:center;justify-content:center;padding:36px;cursor:zoom-out}
+.lightbox.show{display:flex;animation:fade .22s both}
+.lightbox img{max-width:100%;max-height:100%;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+
+/* 세로 화면 안내 */
+.rotate{position:fixed;inset:0;z-index:80;background:#1A2520;color:var(--ivory);display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:30px;text-align:center}
+.rotate.show{display:flex}
+.rotate b{font-size:22px}
+.rotate p{font-size:16px;color:var(--onDark);max-width:34ch;line-height:1.7}
+.rotate .f{background:var(--ivory);border-color:var(--ivory);color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important}
+  [data-anim]{opacity:1}
+  .s.is-active .bar{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 아이콘 ══ -->
+<svg class="sprite" aria-hidden="true"><defs>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5 2.6 20h18.8L12 3.5Z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 2.5V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/><path d="M8.5 11h7M8.5 14.5h4"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3h11a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 17.5 21h-11A1.5 1.5 0 0 1 5 19.5v-15A1.5 1.5 0 0 1 6.5 3Z"/><path d="M10.5 18h3"/></symbol>
+<symbol id="i-call" viewBox="0 0 24 24"><path d="M6 3.5h3l1.6 4-2 1.4a12 12 0 0 0 6.5 6.5l1.4-2 4 1.6v3A2 2 0 0 1 18.4 20C10.4 19.6 4.4 13.6 4 5.6A2 2 0 0 1 6 3.5Z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.1 8.2 7.5 9.4 4.4-1.2 7.5-4.8 7.5-9.4V6L12 3Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></symbol>
+<symbol id="i-family" viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M2.8 19a5.2 5.2 0 0 1 10.4 0M14 19a4.3 4.3 0 0 1 7.2-2.6"/></symbol>
+<symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20.5h18"/></symbol>
+<symbol id="i-gov" viewBox="0 0 24 24"><path d="M4 20.5h16M5.5 20.5V9l6.5-4.5L18.5 9v11.5"/><path d="M9.5 20.5v-5h5v5"/><path d="M9.5 11.5h1M13.5 11.5h1"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6v8.8M14.4 9.6c-.6-.7-1.5-1-2.4-1-1.4 0-2.4.8-2.4 1.9 0 2.6 4.8 1.4 4.8 4 0 1.1-1 1.9-2.4 1.9-1 0-1.9-.4-2.4-1"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3.5 20.5h17"/><path d="M7 20.5v-6M12 20.5V7.5M17 20.5v-9"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.8" y="10.5" width="14.4" height="9.7" rx="2"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><path d="M12 21s6.4-5.6 6.4-10.2A6.4 6.4 0 0 0 5.6 10.8C5.6 15.4 12 21 12 21Z"/><circle cx="12" cy="10.6" r="2.3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="m8.4 12.2 2.5 2.5 4.7-5"/></symbol>
+<symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M9.7 9.6a2.4 2.4 0 1 1 3.1 2.5c-.6.2-.8.7-.8 1.3v.5"/><circle cx="12" cy="16.6" r=".6" fill="currentColor"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.4-2.4a4 4 0 1 0-5.7-5.7l-1.3 1.3"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.4 2.4a4 4 0 1 0 5.7 5.7l1.3-1.3"/></symbol>
+<symbol id="i-rules" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8 8.5h8M8 12.5h8M8 16.5h5"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4.5M6 4.5h11l-2 3.5 2 3.5H6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5s1.5-1.5 1.5-5.5Z"/><path d="M10.2 19a2 2 0 0 0 3.6 0"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M8.6 8.6 15.4 15.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.2 2.3 3.4 5.3 3.4 8.4s-1.2 6.1-3.4 8.4c-2.2-2.3-3.4-5.3-3.4-8.4S9.8 5.9 12 3.6Z"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r=".9" fill="currentColor"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M16 5.6a3.2 3.2 0 0 1 0 5.8M17 14.4a5.4 5.4 0 0 1 4 5.1"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.2A2 2 0 0 1 6 3.5h5v16H6a2 2 0 0 0-2 1.7Z"/><path d="M20 5.2a2 2 0 0 0-2-1.7h-5v16h5a2 2 0 0 1 2 1.7Z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3.5 2 5.5 5.5 2-5.5 2-2 5.5-2-5.5L4.5 11l5.5-2 2-5.5Z"/></symbol>
+<symbol id="i-bang" viewBox="0 0 24 24"><path d="M12 5.5v8.5"/><circle cx="12" cy="18.2" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-qmark" viewBox="0 0 24 24"><path d="M8.6 8.9a3.5 3.5 0 1 1 4.6 3.6c-.9.3-1.2 1-1.2 1.9v.6"/><circle cx="12" cy="18.4" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tri" viewBox="0 0 24 24"><path d="M12 4.6 3 19.4h18L12 4.6Z"/><path d="M12 10v4.3"/><circle cx="12" cy="17.2" r=".75" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 1 1 3.2 0V11"/><path d="M12.2 11V4.4a1.6 1.6 0 1 1 3.2 0V11"/><path d="M15.4 11.4V7.6a1.6 1.6 0 1 1 3.2 0V14c0 3.6-2.6 6.4-6.2 6.4S6 17.6 6 14v-1.6a1.6 1.6 0 0 1 3.2 0"/></symbol>
+</defs></svg>
+
+<header class="topbar">
+  <div class="brand"><b>찬찬</b><span>급할수록 찬찬히</span></div>
+  <nav class="map" id="map" aria-label="슬라이드 개요"></nav>
+  <div class="tools">
+    <button class="tool" id="tocBtn"><svg class="ic sm" aria-hidden="true" style="width:17px;height:17px;vertical-align:-3px"><use href="#i-rules"/></svg> 목차</button>
+    <span class="counter"><b id="cur">1</b> / <span id="tot">29</span></span>
+  </div>
+</header>
+<div class="progress" id="bar" style="width:0"></div>
+
+<main class="deck">
+<div class="stage" id="stage">
+<div class="track" id="track">
+
+<!-- ══ 1 표지 ══ -->
+<section class="s dark" data-sec="표지" data-title="표지">
+  <div class="cover">
+    <div>
+      <p class="eyebrow" data-anim>모두의 창업 2차 · 사업계획</p>
+      <h1 data-anim>찬찬</h1>
+      <p class="slogan gw" data-anim>급할수록 찬찬히</p>
+      <p class="lead" data-anim>모르는 번호로 온 문자를 어르신 폰 안에서 먼저 보고,
+        위험하면 막고 해결하는 데까지 혼자서도 갈 수 있게 돕습니다.<br>
+        어르신은 무료 · 예방 교육을 편성하는 복지관 · 지자체가 냅니다.</p>
+      <p class="sm" style="color:var(--onDark2);margin-top:26px" data-anim>
+        → 오른쪽 화살표나 키보드 <b>→</b> · 위쪽 띠를 누르면 그 장으로 갑니다</p>
+    </div>
+    <figure class="ph" data-anim="pop">
+      <img src="img/app-result.png" alt="찬찬 판정 결과 화면 — 왜 위험한지와 지금 할 일">
+      <figcaption>설계 화면입니다. 「이 번호를 ○명이 제보했어요」는 준비 중이고 지금 앱에는 없습니다.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══ 2 문제 — 피해 규모 ══ -->
+<section class="s" data-sec="문제" data-title="피해 규모">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-warn"/></svg>문제</p>
+    <h2>피해 건수는 줄었지만, 한 번 당하면 수천만 원입니다</h2>
+  </header>
+  <div class="body">
+    <div class="grid c4">
+      <div class="card tap" data-anim>
+        <div class="icbox r sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-coin"/></svg></div>
+        <b class="big s2"><span data-count="12578" data-sep>0</span><span style="font-size:24px">억원</span></b>
+        <p class="sm" style="margin-top:8px">2025년 보이스피싱 피해액<br>2만 3,360건 · 건당 5,384만원</p>
+        <div class="more"><b>출처</b> 경찰청 → 권영진 의원실 · 아이뉴스24 2026.9.23</div>
+      </div>
+      <div class="card tap" data-anim>
+        <div class="icbox g sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+        <b class="big s2 grn">-<span data-count="56">0</span><span style="font-size:24px">%</span></b>
+        <p class="sm" style="margin-top:8px">2026년 1~8월 피해액 3,871억원<br>건수 8,584건 (-49%, 전년 동기)</p>
+        <div class="more"><b>출처</b> 경찰청 국감 자료 · 신아일보 2026.10.12</div>
+      </div>
+      <div class="card tap" data-anim>
+        <div class="icbox r sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-warn"/></svg></div>
+        <b class="big s2 brick"><span data-count="4511" data-sep>0</span><span style="font-size:24px">만원</span></b>
+        <p class="sm" style="margin-top:8px">2026년 1~8월 건당 피해액<br>3,871억원 ÷ 8,584건</p>
+        <div class="more"><b>출처</b> 위 숫자로 찬찬이 계산</div>
+      </div>
+      <div class="card tap" data-anim>
+        <div class="icbox a sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-msg"/></svg></div>
+        <b class="big s2 amb"><span data-count="2574" data-sep>0</span><span style="font-size:24px">만원</span></b>
+        <p class="sm" style="margin-top:8px">2026년 1~8월 스미싱 건당<br>843건 · 217억원 (2025년 1,222만원)</p>
+        <div class="more"><b>출처</b> 경찰청 → 박지원 의원실 · 창업일보 2026.10.16</div>
+      </div>
+    </div>
+    <div class="card amberbg mid" data-anim>
+      <div class="icbox a"><svg class="ic"><use href="#i-spark"/></svg></div>
+      <p><b>건수는 반으로 줄었는데 건당 피해액은 커졌습니다.</b> 스미싱 건당 피해액은
+        1년 만에 1,222만원 → 2,574만원으로 <b class="brick">2.1배</b>가 됐습니다.
+        한 번을 막는 값이 그만큼 올라갔습니다.</p>
+    </div>
+  </div>
+  <p class="note">카드를 누르면 출처가 열립니다. 환급률은 2025년 26.3%(약 1,142억원)이며 금감원 피해구제 기준이라 경찰청 피해액과 직접 비교하지 않습니다.</p>
+</section>
+
+<!-- ══ 3 왜 문자인가 ══ -->
+<section class="s ivory" data-sec="문제" data-title="왜 문자인가">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-msg"/></svg>왜 문자인가</p>
+    <h2>전화는 지키는 곳이 있습니다. 문자는 비어 있습니다</h2>
+  </header>
+  <div class="body split even">
+    <div class="rows" data-anim="left">
+      <p class="lab">보이스피싱 첫 접촉 (2026.1~8 · 8,584건)</p>
+      <div class="hbar"><span class="t">전화</span>
+        <div class="rail"><div class="fillbar" style="--w:91.3%;background:var(--slate)"></div></div>
+        <span class="n slate">91.3%</span></div>
+      <div class="hbar"><span class="t">문자</span>
+        <div class="rail"><div class="fillbar" style="--w:2.6%;background:var(--coral)"></div></div>
+        <span class="n cor">2.6%</span></div>
+      <p class="sm slate">전화 7,841건 · 문자 223건. 2.6%는 찬찬 계산입니다.</p>
+      <div class="card blush mid" style="margin-top:4px">
+        <div class="icbox r sm"><svg class="ic sm"><use href="#i-q"/></svg></div>
+        <p class="sm"><b>그런데 왜 문자를 맡나요?</b></p>
+      </div>
+    </div>
+    <div class="rows" data-anim="right">
+      <div class="card mid">
+        <div class="icbox gray"><svg class="ic"><use href="#i-call"/></svg></div>
+        <div><h4>전화</h4><p class="sm slate">통신사 · 삼성 · 보이스쉴드가 지킵니다. 이미 사람과 돈이 붙어 있습니다.</p></div>
+      </div>
+      <div class="card mist mid">
+        <div class="icbox g"><svg class="ic"><use href="#i-msg"/></svg></div>
+        <div><h4>문자 — 찬찬이 맡습니다</h4>
+          <p class="sm"><b>스미싱은 보이스피싱과 별개의 범죄입니다.</b> 2026년 1~8월에만 843건 · 217억원이고,
+            건당 피해액이 2.1배로 뛰었습니다.</p></div>
+      </div>
+      <div class="card oat">
+        <p class="sm"><b>탐지와 발생은 기준이 다릅니다.</b> 발생은 줄었지만(4,396건 → 2,685건),
+          탐지는 3만 7,122건(2022) → 219만 6,469건(2024)으로 늘었습니다. 한쪽만 말하지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+  <p class="note">출처: 경찰청 → 손명수 의원실 · 한국소통투데이 2026.9.29 · 창업일보 2026.10.16 · KISA → 뉴스토마토 2024.3.31 · 전자신문 2025.6</p>
+</section>
+
+<!-- ══ 4 왜 고령층인가 ══ -->
+<section class="s" data-sec="문제" data-title="왜 고령층인가">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-people"/></svg>왜 고령층인가</p>
+    <h2>피해 3건 중 1건이 60대 이상, 70대 이상은 빠르게 늘고 있습니다</h2>
+  </header>
+  <div class="body split wide">
+    <div class="rows">
+      <p class="lab" data-anim>연령대별 피해 비중 (2026.1~8 · 8,584건)</p>
+      <div class="hbar" data-anim><span class="t">60대 이상</span>
+        <div class="rail"><div class="fillbar" style="--w:34.4%"></div></div>
+        <span class="n grn">34.4%</span></div>
+      <div class="hbar" data-anim><span class="t">└ 70대 이상</span>
+        <div class="rail"><div class="fillbar" style="--w:13.6%;background:var(--amber)"></div></div>
+        <span class="n amb">13.6%</span></div>
+      <div class="hbar" data-anim><span class="t">60세+ 인구</span>
+        <div class="rail"><div class="fillbar" style="--w:30%;background:#C9D4CD"></div></div>
+        <span class="n slate">30.0%</span></div>
+      <p class="sm slate" data-anim>인구 비중(30.0%)보다 피해 비중(34.4%)이 높습니다.
+        70대 이상은 3.6%(2021) → 6.4%(2025) → 13.6%(2026.1~8).</p>
+      <div class="card amberbg mid" data-anim>
+        <div class="icbox a sm"><svg class="ic sm"><use href="#i-hand"/></svg></div>
+        <p class="sm"><b>정직한 한계</b> — 공개 통계는 60대 · 70대 이상 구간뿐입니다.
+          65세 이상은 찬찬 추정이고 공식 통계가 아닙니다. 연령별 피해액은 쓰지 않았습니다.</p>
+      </div>
+    </div>
+    <div class="rows">
+      <div class="card tap" data-anim="right">
+        <b class="big s3"><span data-count="7294" data-sep>0</span>건</b>
+        <p class="sm" style="margin-top:6px">2025년 60대 이상 피해 · 전체의 31.2%<br>(2024년 5,303건 · 25.4%)</p>
+        <div class="more"><b>출처</b> 경찰청 → 국회 자료 · 파이낸셜뉴스 2026.9.19</div>
+      </div>
+      <div class="card tap" data-anim="right">
+        <b class="big s3 brick">+<span data-count="42.6">0</span>%</b>
+        <p class="sm" style="margin-top:6px">2025년 70대 이상 증가율 (1,493건)<br>전체 건수 증가율은 +12.1%</p>
+        <div class="more"><b>출처</b> 같은 자료</div>
+      </div>
+      <div class="card tap" data-anim="right">
+        <b class="big s3 amb"><span data-count="93.9">0</span>%</b>
+        <p class="sm" style="margin-top:6px">가족 사칭 스미싱 피해자 중 50대 이상<br>1,856명 중 1,743명 · 민간 보고서</p>
+        <div class="more"><b>출처</b> 인피니그루 → 한국일보 2026.8.7</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">인구는 행안부 주민등록 2026.9.30 (찬찬 계산). 오른쪽 카드를 누르면 출처가 열립니다.</p>
+</section>
+
+<!-- ══ 5 고객 ══ -->
+<section class="s ivory" data-sec="고객 · 경쟁" data-title="고객 — 1차 타깃">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-target"/></svg>고객</p>
+    <h2>처음 이길 곳 — 혼자 판단하는 75세 이상, 오래된 폰</h2>
+  </header>
+  <div class="body split even">
+    <div class="grid c2">
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-user"/></svg></div>
+        <h4>75세 이상</h4><p class="sm">가장 어려운 분이 혼자 쓰시면 모두가 쓸 수 있습니다 (설계 기준)</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-phone"/></svg></div>
+        <h4>구형 · 보급형</h4><p class="sm">안드로이드 7 이상. 삼성 최신 기기 · 특정 통신사 보호가 닿지 않는 폰</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-q"/></svg></div>
+        <h4>혼자 판단</h4><p class="sm">부부 · 독거. 물어보기 미안해 혼자 정합니다</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+        <h4>디지털 역량 56.2%</h4><p class="sm">55세 이상, 일반 국민 대비. 60대+ 피해자 비중 16%(2020) → 30.6%(2025.1~8)</p></div>
+    </div>
+    <div class="rows">
+      <div class="card oat fill" data-anim="right">
+        <p class="kicker" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-spark"/></svg>왜 시작했나</p>
+        <p style="line-height:1.8">할아버지가 보이스피싱으로 <b>3,000만원</b>을 잃으셨습니다.
+          옆에 물어볼 사람이 없었고, 혼자 판단하셨습니다.</p>
+        <p style="line-height:1.8;margin-top:14px">지금도 할머니 두 분은 저를 만나면 휴대폰부터 내미십니다.
+          <b>제가 없는 날에도 그 역할을 하는 것</b>이 찬찬입니다.</p>
+      </div>
+      <div class="card mid" data-anim="right">
+        <div class="icbox gray sm"><svg class="ic sm"><use href="#i-stop"/></svg></div>
+        <p class="sm"><b>버리는 층</b> — 혼자 다 잘하는 60대. 통신사 · 시티즌코난으로 충분합니다.</p>
+      </div>
+    </div>
+  </div>
+  <p class="note">출처: 과기정통부 · NIA 2025 디지털 정보격차 실태조사(머니투데이 2026.3.27) · 경찰청 → 남인순 의원실(THE NEWS 2025.9.30)</p>
+</section>
+
+<!-- ══ 6 포지셔닝 ══ -->
+<section class="s" data-sec="고객 · 경쟁" data-title="포지셔닝">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-map"/></svg>포지셔닝</p>
+    <h2>오른쪽 위가 비어 있습니다 — 혼자 쓸 수 있고, 해결까지 갑니다</h2>
+  </header>
+  <div class="body split wide">
+    <div class="posmap" data-anim>
+      <svg viewBox="0 0 620 330" role="img" aria-label="포지셔닝 지도">
+        <defs><linearGradient id="gw" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#E9F2EC" stop-opacity="0"/>
+          <stop offset="1" stop-color="#4F8F69" stop-opacity=".22"/></linearGradient>
+          <marker id="ah" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#2F6B4F"/></marker></defs>
+        <rect x="340" y="22" width="248" height="128" fill="url(#gw)" rx="12"/>
+        <text x="464" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#2F6B4F">비어 있는 자리</text>
+        <line x1="62" y1="282" x2="596" y2="282" stroke="#DDE7E0" stroke-width="2"/>
+        <line x1="62" y1="282" x2="62" y2="18" stroke="#DDE7E0" stroke-width="2"/>
+        <text x="330" y="312" text-anchor="middle" font-size="14" fill="#5E6B63">판정 후 함께 가는 거리 (0 → 6) →</text>
+        <text x="26" y="150" font-size="14" fill="#5E6B63" transform="rotate(-90 26 150)" text-anchor="middle">자립 접근성 →</text>
+        <path d="M434 74 Q480 56 516 52" stroke="#2F6B4F" stroke-width="2" fill="none"
+              stroke-dasharray="5 5" marker-end="url(#ah)"/>
+        <circle class="dot" cx="420" cy="80" r="12" fill="#D96B63" data-k="찬찬 (지금)" data-x="4"
+          data-t="판정 근거 · 지금 할 일 · 가족 알림 · 피해 후 대응까지 동작합니다. 설치하면 사람 도움 없이 혼자 시작합니다."></circle>
+        <circle class="dot" cx="524" cy="50" r="10" fill="#2F6B4F" stroke="#fff" stroke-width="2"
+          stroke-dasharray="3 3" data-k="찬찬 (목표)" data-x="6"
+          data-t="진짜 번호로 확인 · 함께 막기 · 눌러 버렸어요까지 더해 6으로 갑니다."></circle>
+        <circle class="dot" cx="248" cy="118" r="11" fill="#B84A44" data-k="시티즌코난" data-x="2"
+          data-t="문자 · 악성앱 · 통화를 봅니다. 경고에서 끝나고 그다음 할 일은 사용자가 찾습니다."></circle>
+        <circle class="dot" cx="248" cy="228" r="11" fill="#B7791F" data-k="보이스쉴드" data-x="2"
+          data-t="같은 기관 시장입니다. 설명회 · 설치 교육 · 헬프데스크로 운영해서, 사람이 있어야 시작됩니다."></circle>
+        <circle class="dot" cx="152" cy="66" r="11" fill="#5E6B63" data-k="삼성 기본 · 에이닷 · 익시오"
+          data-t="무료 · 설치 없음이라 자립 접근성은 가장 높습니다. 다만 S25 · One UI 8 이상 또는 SKT · U+ 가입자만 닿습니다."></circle>
+        <circle class="dot" cx="152" cy="206" r="11" fill="#5E6B63" data-k="보호나라"
+          data-t="카톡 채널에 문자를 복사해 보내야 하고, 인터넷 주소가 있는 문자만 확인합니다."></circle>
+        <circle class="dot" cx="320" cy="256" r="11" fill="#5E6B63" data-k="자녀 · 무료 예방 교육"
+          data-t="해결까지는 가지만 사람이 곁에 있어야 합니다. 「미안해서」 묻지 않는 순간이 사고가 나는 지점입니다."></circle>
+      </svg>
+      <div class="pminfo" id="pmInfo"><b>점을 눌러 보세요</b>누구인지와 왜 그 자리인지 보여 드립니다.</div>
+    </div>
+    <div class="rows">
+      <div class="card mist" data-anim="right">
+        <h4 class="grn">Y · 자립 접근성</h4>
+        <p class="sm">어르신 혼자 시작하고 쓸 수 있는가</p>
+        <p class="sm slate" style="margin-top:7px">잰다 — 설치~첫 판정 탭 수 · 최소 OS · 앱 용량 · 통신사/기기 제약 · 사람 도움 필요 여부</p>
+      </div>
+      <div class="card oat" data-anim="right">
+        <h4 class="grn">X · 판정 후 함께 가는 거리</h4>
+        <p class="sm">경고에서 끝나는가, 해결까지 가는가</p>
+        <p class="sm slate" style="margin-top:7px">센다 — 근거 · 지금 할 일 · 진짜 번호로 확인 · 가족 · 피해 후 대응 · 기관 리포트 (0~6)</p>
+        <p class="sm" style="margin-top:9px"><b>찬찬 지금 4 → 목표 6</b> · 시티즌코난 2 · 보이스쉴드 2</p>
+      </div>
+      <button class="f" data-lb="img/posmap_slide.png" data-anim="right" style="align-self:flex-start">원본 그림 보기</button>
+    </div>
+  </div>
+  <p class="note">가로축 값은 덱의 값이고, <b>세로축 자리는 추정입니다</b> — 같은 폰에 깔고 설치~첫 판정 탭 수를 화면 녹화로 세어 확정합니다.</p>
+</section>
+
+<!-- ══ 7 경쟁 ══ -->
+<section class="s ivory" data-sec="고객 · 경쟁" data-title="경쟁 네 갈래">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-flag"/></svg>경쟁 지도</p>
+    <h2>같은 문자를 보는 곳, 같은 기관에 파는 곳은 따로 있습니다</h2>
+  </header>
+  <div class="body grid c2">
+    <div class="card tap" data-anim>
+      <div class="mid" style="margin-bottom:8px">
+        <div class="icbox r sm"><svg class="ic sm"><use href="#i-shield"/></svg></div>
+        <div><p class="lab brick">기능 경쟁</p><h3>시티즌코난</h3></div>
+      </div>
+      <p class="sm slate">문자 · 악성앱 · 통화를 봅니다. 설치 100만+ (구 앱 500만+). 운영사 인피니그루 매출 37.3억(2025, 회사 전체) · 금융사 FDS 공급</p>
+      <div class="more"><b>찬찬 →</b> 광고 없음 · 자동 차단 대신 확인 후 함께 막기 · 해결까지 · 기관 리포트</div>
+    </div>
+    <div class="card tap" data-anim>
+      <div class="mid" style="margin-bottom:8px">
+        <div class="icbox a sm"><svg class="ic sm"><use href="#i-gov"/></svg></div>
+        <div><p class="lab amb">고객 경쟁</p><h3>보이스쉴드</h3></div>
+      </div>
+      <p class="sm slate">같은 지자체 · 복지관을 노립니다. 송파 실증 100명(~2027.6) · 광주TP 협약 · TIPS. 설명회 · 설치 교육 · 헬프데스크로 운영</p>
+      <div class="more"><b>찬찬 →</b> 전화는 보이스쉴드, 문자는 찬찬 — 경쟁이 아니라 보완. 설치에 사람이 필요 없음</div>
+    </div>
+    <div class="card tap" data-anim>
+      <div class="mid" style="margin-bottom:8px">
+        <div class="icbox gray sm"><svg class="ic sm"><use href="#i-phone"/></svg></div>
+        <div><p class="lab">기본값 대체재</p><h3>삼성 기본 · 에이닷 · 익시오</h3></div>
+      </div>
+      <p class="sm slate">무료 · 설치 없음. 다만 S25 · One UI 8 이상 또는 SKT · U+ 가입자만</p>
+      <div class="more"><b>찬찬 →</b> 구형 · 보급형 · 알뜰폰 어르신에게는 닿지 않음</div>
+    </div>
+    <div class="card tap" data-anim>
+      <div class="mid" style="margin-bottom:8px">
+        <div class="icbox gray sm"><svg class="ic sm"><use href="#i-family"/></svg></div>
+        <div><p class="lab">행동 대체재</p><h3>자녀 · 보호나라 · 예방 교육</h3></div>
+      </div>
+      <p class="sm slate">보호나라는 카톡 채널에 문자를 복사해 보내야 하고, URL이 있는 문자만 확인합니다</p>
+      <div class="more"><b>찬찬 →</b> 즉시 · 혼자 · 미안하지 않게</div>
+    </div>
+  </div>
+  <p class="note">네 칸을 누르면 찬찬의 답이 열립니다. <b>온디바이스는 차별점이 아니라 기본 조건입니다.</b> 출처: Google Play(2026-10-27) · 뉴스핌 2026.9.1 · ZDNet 2026.2.12 · 보안뉴스 2024.4.1</p>
+</section>
+
+<!-- ══ 8 STP ══ -->
+<section class="s" data-sec="고객 · 경쟁" data-title="STP">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-target"/></svg>STP</p>
+    <h2>나이로 자르지 않고, 「혼자 할 수 있는가」로 자릅니다</h2>
+  </header>
+  <div class="body grid c3">
+    <div class="card" data-anim>
+      <div class="mid" style="margin-bottom:10px"><div class="icbox g sm"><svg class="ic sm"><use href="#i-rules"/></svg></div>
+        <h3 class="grn">S · 세분화</h3></div>
+      <ul class="sm">
+        <li>기기 — 최신 갤럭시 / 구형 · 보급형 / 아이폰 / 폴더폰</li>
+        <li>역량 — 혼자 설치 / 도움 있으면 / 불가</li>
+        <li>가구 — 자녀 동거 / 부부 · 독거</li>
+        <li>기관 접점 — 지자체 · 은행 / 복지관 / 없음</li>
+        <li>통신사 — SKT · U+ / KT · 알뜰폰</li>
+      </ul>
+    </div>
+    <div class="card" data-anim>
+      <div class="mid" style="margin-bottom:10px"><div class="icbox g sm"><svg class="ic sm"><use href="#i-target"/></svg></div>
+        <h3 class="grn">T · 타깃</h3></div>
+      <ul class="sm">
+        <li><b>1차 사용자</b> — 75세+ · 구형 안드로이드 · 혼자 판단 · 복지관 이용</li>
+        <li><b>1차 구매자</b> — 기초 · 광역 지자체, 금융기관</li>
+        <li><b>함께 쓰는 사람</b> — 자녀 · 가족 (무료)</li>
+        <li><b>버리는 층</b> — 디지털 능숙 60대</li>
+      </ul>
+    </div>
+    <div class="card dk" data-anim>
+      <div class="mid" style="margin-bottom:10px"><div class="icbox d sm"><svg class="ic sm"><use href="#i-spark"/></svg></div>
+        <h3 style="color:var(--onDark2)">P · 포지셔닝</h3></div>
+      <p class="sm" style="line-height:1.7">문자를 혼자 판단해야 하는 어르신과 그분들을 보호해야 하는 지자체 · 금융기관에게,
+        찬찬은 모르는 번호 문자를 받은 순간 「서두르지 말고 함께 확인하는」 문자 도우미입니다.</p>
+      <p class="sm" style="line-height:1.7;margin-top:10px">다른 서비스가 잡아내는 데서 멈추는 것과 달리, 찬찬은 막고 해결하는 데까지 가고,
+        <b class="cor">어르신에게는 아무것도 팔지 않습니다.</b></p>
+      <p class="gw cor" style="font-size:24px;margin-top:16px">급할수록 찬찬히</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 9 해결 ══ -->
+<section class="s dark" data-sec="제품" data-title="해결 세 가지">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-shield"/></svg>해결</p>
+    <h2>먼저 보고, 막고 해결하는 데까지, 가족이 함께</h2>
+  </header>
+  <div class="body grid c3">
+    <div class="card dk" data-anim="pop">
+      <div class="icbox d"><svg class="ic lg"><use href="#i-eye"/></svg></div>
+      <h3 style="color:var(--ivory);margin-top:14px">① 먼저 봅니다</h3>
+      <p class="sm" style="margin-top:8px;line-height:1.75">연락처에 없는 번호의 문자를 폰 안에서 먼저 봅니다.
+        권한이 없어도 「공유 → 찬찬」으로 확인됩니다. <b style="color:var(--onDark2)">데이터를 꺼 둬도 동작합니다.</b></p>
+    </div>
+    <div class="card dk" data-anim="pop">
+      <div class="icbox d"><svg class="ic lg"><use href="#i-hand"/></svg></div>
+      <h3 style="color:var(--ivory);margin-top:14px">② 해결까지</h3>
+      <p class="sm" style="margin-top:8px;line-height:1.75">왜 위험한지 · 지금 할 일 · 진짜 번호로 확인 · 함께 막기 ·
+        「눌러 버렸어요」 대처. <b class="cor">「안전합니다」라고는 말하지 않습니다.</b></p>
+    </div>
+    <div class="card dk" data-anim="pop">
+      <div class="icbox d"><svg class="ic lg"><use href="#i-family"/></svg></div>
+      <h3 style="color:var(--ivory);margin-top:14px">③ 가족이 함께</h3>
+      <p class="sm" style="margin-top:8px;line-height:1.75">확실한 사기 신호일 때만 가족에게 알립니다.
+        보내기 전 <b style="color:var(--onDark2)">10초 동안 취소</b>할 수 있고, 문자 내용은 보내지 않습니다.</p>
+    </div>
+  </div>
+  <p class="note" style="color:var(--onDark2);font-size:16px">판정은 전부 폰 안에서 · 문자 원문은 저장하지 않고 서버로 보내지 않습니다 · 안드로이드 7 이상 · 목표 용량 6MB 이하</p>
+</section>
+
+<!-- ══ 10 시제품 화면 ══ -->
+<section class="s ivory" data-sec="제품" data-title="시제품 화면">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-phone"/></svg>시제품 화면</p>
+    <h2>문자가 오면 → 알림 → 결과 → 할 일</h2>
+  </header>
+  <div class="body split wide">
+    <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center" data-anim>
+      <figure class="shot"><img src="img/app-lock.png" alt="잠금화면 경고 알림" class="crop" style="width:190px" data-lb><figcaption>① 잠금화면 알림</figcaption></figure>
+      <figure class="shot"><img src="img/app-result.png" alt="확인 결과 화면" class="crop" style="width:190px" data-lb><figcaption>② 결과 — 왜 위험한지와 할 일</figcaption></figure>
+      <figure class="shot"><img src="img/app-home.png" alt="홈 화면" class="crop" style="width:190px" data-lb><figcaption>③ 홈 — 지키고 있습니다</figcaption></figure>
+    </div>
+    <div class="rows">
+      <p class="lab" data-anim="right">판정은 셋 — 눌러 보세요</p>
+      <div class="signal" data-anim="right">
+        <button class="lamp d on" type="button" data-v="d" aria-pressed="true">
+          <i><svg aria-hidden="true"><use href="#i-bang"/></svg></i><b>위험합니다</b></button>
+        <button class="lamp c" type="button" data-v="c" aria-pressed="false">
+          <i><svg aria-hidden="true"><use href="#i-tri"/></svg></i><b>조심하세요</b></button>
+        <button class="lamp u" type="button" data-v="u" aria-pressed="false">
+          <i><svg aria-hidden="true"><use href="#i-qmark"/></svg></i><b>답하지 않으셔도 됩니다</b></button>
+      </div>
+      <div class="card mist" id="vdInfo" data-anim="right"></div>
+    </div>
+  </div>
+  <p class="note">「안전」 등급은 <b>일부러 없습니다</b> — 놓친 사기 문자를 「괜찮다」고 말하지 않기 위해서입니다.
+    <svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> ② 화면의 「이 번호를 ○명이 제보했어요」는 <b>준비 중</b>이고 지금 앱에는 없습니다. 화면: Figma <b>Full Hi-Fi Product Screens</b> 보드에서 바로 뽑았습니다 (2026-11-09).</p>
+</section>
+
+<!-- ══ 11 판정 다음 ══ -->
+<section class="s" data-sec="제품" data-title="판정 다음 — 기능 12">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-check"/></svg>판정 다음</p>
+    <h2>경쟁사가 경고에서 멈추는 곳에서, 찬찬은 해결까지 갑니다</h2>
+  </header>
+  <div class="body">
+    <div class="filters" data-anim>
+      <button class="f on" data-filter="all">전체 12</button>
+      <button class="f" data-filter="done">완성 4</button>
+      <button class="f" data-filter="part">일부 1</button>
+      <button class="f" data-filter="plan">설계 7</button>
+      <span class="note" id="fNote">상태별로 가려 봅니다.</span>
+    </div>
+    <div class="grid c4" id="feats" style="gap:13px" data-anim>
+      <div class="card" data-st="done" style="padding:14px"><span class="chip done">완성</span><h4 style="margin-top:8px">판정 근거</h4><p class="note">걸린 자리를 문자 위에 표시</p></div>
+      <div class="card" data-st="done" style="padding:14px"><span class="chip done">완성</span><h4 style="margin-top:8px">지금 할 일</h4><p class="note">「답하지 마세요 · 112 · 가족」 한 줄씩</p></div>
+      <div class="card" data-st="done" style="padding:14px"><span class="chip done">완성</span><h4 style="margin-top:8px">가족 알림</h4><p class="note">확실한 신호일 때만 · 10초 취소</p></div>
+      <div class="card" data-st="done" style="padding:14px"><span class="chip done">완성</span><h4 style="margin-top:8px">피해 후 대응</h4><p class="note">지급정지 → 112 → 1332</p></div>
+      <div class="card" data-st="part" style="padding:14px"><span class="chip part">일부</span><h4 style="margin-top:8px">기관 리포트</h4><p class="note">설치 · 연습 정답률 · 경고 후 행동 — 숫자만</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">진짜 번호로 확인</h4><p class="note">문자 속 번호 대신 공식 대표번호로</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">함께 막기</h4><p class="note">자동 차단 대신 차단 화면까지 안내 + 신고</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">눌러 버렸어요</h4><p class="note">링크 · 앱 설치 · 정보 입력 · 송금 네 갈래</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">찬찬히 타이머</h4><p class="note">「30분만 기다려 볼까요?」 재촉을 시간으로 끊기</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">가짜 주소 보여 주기</h4><p class="note">「이 주소는 CJ대한통운이 아닙니다」</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">미리 잠가 두기</h4><p class="note">여신거래 안심차단 · 명의도용 방지 · 지연이체</p></div>
+      <div class="card" data-st="plan" style="padding:14px"><span class="chip plan">설계</span><h4 style="margin-top:8px">같은 번호 신고 대조</h4><p class="note">「이 번호를 사기로 신고한 분이 있습니다」 — <b>지금 앱에는 없습니다</b></p></div>
+    </div>
+  </div>
+  <p class="note">「완성」은 시범 앱에서 동작 확인, 「설계」는 기획 · 디자인 단계입니다. 대표 기능: 진짜 번호로 확인 · 함께 막기 · 눌러 버렸어요.</p>
+</section>
+
+<!-- ══ 12 온보딩 ══ -->
+<section class="s ivory" data-sec="제품" data-title="온보딩">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-spark"/></svg>온보딩</p>
+    <h2>사람이 가르치지 않습니다 — 앱이 안내하고, 혼자 켜게 합니다</h2>
+  </header>
+  <div class="body split wide">
+    <div style="display:flex;gap:20px;justify-content:center" data-anim>
+      <figure class="shot"><img src="img/app-onb-start.png" alt="시작하기 화면" class="crop" style="width:190px" data-lb><figcaption>① 무료로 시작하기</figcaption></figure>
+      <figure class="shot"><img src="img/app-onb-protect.png" alt="자동 확인 켜기 화면" class="crop" style="width:190px" data-lb><figcaption>② 이유를 듣고 보호 켜기</figcaption></figure>
+      <figure class="shot"><img src="img/app-learn.png" alt="미리 알아두기 화면" class="crop" style="width:190px" data-lb><figcaption>③ 확인 뒤 「미리 알아두기」</figcaption></figure>
+    </div>
+    <div class="rows">
+      <div class="card mist mid" data-anim="right"><b class="big s3 grn" style="min-width:76px"><span data-count="3">0</span>탭</b>
+        <p class="sm">첫 판정까지</p></div>
+      <div class="card mist mid" data-anim="right"><b class="big s3 grn" style="min-width:76px"><span data-count="7">0</span>탭</b>
+        <p class="sm">보호 켜짐까지 (시스템 창 포함)</p></div>
+      <div class="card mist mid" data-anim="right"><b class="big s3 grn" style="min-width:76px"><span data-count="2">0</span>탭</b>
+        <p class="sm">가입 — 번호 고르기 · 6자리 자동 입력</p></div>
+      <ul class="sm" data-anim="right" style="margin-top:4px">
+        <li>가입 전에 먼저 써 봅니다 — 계정은 가족을 연결할 때만</li>
+        <li>비밀번호 · 이메일 없음 — 전화번호 + 문자 6자리</li>
+        <li>권한은 쓰는 순간에 이유와 함께. 거부해도 「공유로 확인」</li>
+        <li><b>기관 담당자가 할 일은 QR 공지 한 장</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">탭 수는 목표입니다. 사용성 테스트(가족 외 10명)와 가족 시범에서 실측해 바꿉니다.</p>
+</section>
+
+<!-- ══ 13 가족 ══ -->
+<section class="s" data-sec="제품" data-title="두 번째 축 · 가족">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-family"/></svg>두 번째 축 · 가족</p>
+    <h2>부모님은 위험한 일을 자녀에게 말하지 않으십니다</h2>
+  </header>
+  <div class="body split wide">
+    <div class="rows">
+      <p class="gw" data-anim style="font-size:25px;line-height:1.5">「미안해서」 혼자 판단하시는 순간이
+        <b class="brick">사고가 나는 지점</b>입니다. 자동 알림은 그 빈자리를 채웁니다.</p>
+      <div class="grid c2" style="margin-top:4px">
+        <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-warn"/></svg></div>
+          <h4>확실할 때만</h4><p class="sm">안전계좌 · 원격 앱 · 자산 검사 · 비밀 유지 요구 — 무조건위험 신호에 걸렸을 때만 자동으로 갑니다</p></div>
+        <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-lock"/></svg></div>
+          <h4>내용은 안 갑니다</h4><p class="sm">자녀가 보는 것은 <b>판정과 날짜뿐</b>입니다. 문자 내용은 가지 않습니다</p></div>
+        <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-family"/></svg></div>
+          <h4>자녀는 무료</h4><p class="sm">기관 계약이면 관내 어르신 가족 알림까지 포함됩니다</p></div>
+        <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-phone"/></svg></div>
+          <h4>자녀 폰으로</h4><p class="sm">알림과 리포트를 받습니다 — 오른쪽 화면</p></div>
+      </div>
+    </div>
+    <div class="rows" style="align-items:center">
+      <div data-anim="pop" style="text-align:center">
+        <svg class="ringtimer" viewBox="0 0 132 132" style="width:112px;height:112px">
+          <circle class="bg" cx="66" cy="66" r="58"/>
+          <circle class="fg" cx="66" cy="66" r="58"/>
+        </svg>
+        <p class="gw" style="font-size:20px;margin-top:8px">10초 동안 취소</p>
+        <p class="note" style="margin-top:4px;max-width:32ch">보내기 전 부모님 폰에 「보내는 중 · 취소」가 뜹니다.
+          되돌릴 수 없는 길에는 「취소할 수 있어요」라고 쓰지 않습니다.</p>
+      </div>
+      <div style="display:flex;gap:14px" data-anim="right">
+        <figure class="shot"><img src="img/app-child-alert.png" alt="자녀 폰에 도착한 경고 알림" style="width:120px" data-lb><figcaption>자녀 폰 알림</figcaption></figure>
+        <figure class="shot"><img src="img/app-child-report.png" alt="자녀가 보는 이번 주 리포트" style="width:120px" data-lb><figcaption>자녀가 보는 것</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 14 판정 · 데이터 ══ -->
+<section class="s ivory" data-sec="제품" data-title="판정 · 데이터">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-rules"/></svg>판정 · 데이터</p>
+    <h2>전부 폰 안에서 — 규칙이 먼저, 작은 모델이 거듭니다</h2>
+  </header>
+  <div class="body split wide">
+    <div class="rows">
+      <div class="card mist mid" data-anim="left">
+        <div class="icbox g"><svg class="ic"><use href="#i-rules"/></svg></div>
+        <div><h4 class="grn">① 규칙 판정 <span class="chip done">지금 동작</span></h4>
+          <p class="sm">사기 신호 <b>29가지</b> + 조합 <b>6가지</b>. 왜 위험한지 사람이 읽을 수 있습니다.</p></div>
+      </div>
+      <div class="flowline" data-anim="left"></div>
+      <div class="card mid" data-anim="left">
+        <div class="icbox gray"><svg class="ic"><use href="#i-people"/></svg></div>
+        <div><h4>② 신고 대조 <span class="chip plan">준비 중</span></h4>
+          <p class="sm">다른 분들이 신고한 번호와 대조합니다. <b>지금 앱에는 없습니다.</b> 문자 원문은 서버로 보내지 않습니다.</p></div>
+      </div>
+      <div class="flowline" data-anim="left"></div>
+      <div class="card mid" data-anim="left">
+        <div class="icbox gray"><svg class="ic"><use href="#i-spark"/></svg></div>
+        <div><h4>③ 작은 분류 모델 <span class="chip plan">준비 중</span></h4>
+          <p class="sm">1MB 이하, 폰 안에서. 규칙의 「위험」을 낮추지 못하고 낮은 등급을 올리는 데만 씁니다.
+            <b>나오기 전에는 「AI 판정」이라고 말하지 않습니다.</b></p></div>
+      </div>
+    </div>
+    <div class="card oat" data-anim="right">
+      <p class="kicker" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-lock"/></svg>이렇게 다룹니다</p>
+      <ul class="sm">
+        <li><b>서버 AI 없음</b> — 개인정보 국외이전 쟁점과 AI 비용이 함께 사라집니다</li>
+        <li>문자 원문은 저장하지 않고 서버로 보내지 않습니다</li>
+        <li>데이터(인터넷)를 꺼 둬도 판정합니다</li>
+        <li>기준 사례 <b>1,221건</b> — 규칙을 바꿀 때마다 결과를 대조(현재 모두 일치)</li>
+        <li>공공기관 사칭 가중치 조정으로 직접 확인 오탐 <b>5.9% → 1.0%</b></li>
+        <li><b>숫자가 나오기 전에는 정확도를 말하지 않습니다</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">1,221건은 「맞는 답」이 아니라 「지금 엔진이 내는 답」과 대조하는 기준표입니다. 오탐 수치는 찬찬 내부 검증이며 독립 검증이 아닙니다. 용량 — 지금 12.2MB(디버그) → 목표 6MB 이하.</p>
+</section>
+
+<!-- ══ 15 4P ══ -->
+<section class="s" data-sec="사업" data-title="4P">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-book"/></svg>4P</p>
+    <h2>어르신에게는 아무것도 팔지 않고, 기관에는 숫자를 팝니다</h2>
+  </header>
+  <div class="body grid c2">
+    <div class="card" data-anim><div class="mid" style="margin-bottom:9px">
+      <div class="icbox g sm"><svg class="ic sm"><use href="#i-shield"/></svg></div><h3 class="grn">Product</h3></div>
+      <ul class="sm"><li>문자 판정 3등급 + 근거</li><li>판정 다음 여섯 걸음</li>
+        <li>연습으로 시작하는 온보딩 · 가족 알림</li><li>대면 교육이 필요 없는 UI · UX</li></ul></div>
+    <div class="card" data-anim><div class="mid" style="margin-bottom:9px">
+      <div class="icbox g sm"><svg class="ic sm"><use href="#i-coin"/></svg></div><h3 class="grn">Price</h3></div>
+      <ul class="sm"><li><b>어르신 0원 · 광고 0 · 결제창 0</b></li>
+        <li>기초 2,000만 · 광역 1억 · 은행 2억 · 중앙회 1억 · 지방 5,000만</li>
+        <li>복지관 600만은 유지하되 우선순위는 지자체 · 금융기관</li>
+        <li>금융기관 단가는 인터뷰로 검증 전</li></ul></div>
+    <div class="card" data-anim><div class="mid" style="margin-bottom:9px">
+      <div class="icbox g sm"><svg class="ic sm"><use href="#i-map"/></svg></div><h3 class="grn">Place</h3></div>
+      <ul class="sm"><li>기관 계약 → QR로 설치 시작, 그 뒤는 앱이 혼자</li>
+        <li>은행 고객 안내 · 지점 · 자녀 설치 링크</li>
+        <li>복지관 · 치매안심센터는 지역 계약의 현장 창구</li>
+        <li>스토어는 문자 권한 심사 뒤 — 그 전엔 「공유로 확인」</li></ul></div>
+    <div class="card" data-anim><div class="mid" style="margin-bottom:9px">
+      <div class="icbox g sm"><svg class="ic sm"><use href="#i-bell"/></svg></div><h3 class="grn">Promotion</h3></div>
+      <ul class="sm"><li>기관 — 피해 예방 성과를 입증하는 분기 리포트</li>
+        <li>어르신 — 「급할수록 찬찬히」 큰 글씨 카드 · 포스터</li>
+        <li>비교는 사실만 — 광고 없음 · 지우지 않고 설명</li>
+        <li>경쟁사 이름은 영업 자료에 쓰지 않음</li></ul></div>
+  </div>
+</section>
+
+<!-- ══ 16 수익 모델 ══ -->
+<section class="s dark" data-sec="사업" data-title="수익 모델">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-coin"/></svg>수익 모델</p>
+    <h2>어르신은 무료, 지키는 책임이 있는 기관이 냅니다</h2>
+  </header>
+  <div class="body">
+    <div class="money" data-anim style="margin-top:14px">
+      <div class="card dk" style="text-align:center">
+        <div class="icbox d" style="margin:0 auto 10px"><svg class="ic lg"><use href="#i-gov"/></svg></div>
+        <p class="lab" style="color:var(--onDark2)">돈 내는 사람</p>
+        <h3 style="color:var(--ivory)">지자체 · 금융기관</h3>
+        <p class="gw cor" style="font-size:20px;margin-top:6px">연간 계약</p>
+      </div>
+      <div class="arrowline"><em>돈</em></div>
+      <div class="card dk" style="text-align:center">
+        <div class="icbox d" style="margin:0 auto 10px"><svg class="ic lg"><use href="#i-shield"/></svg></div>
+        <p class="lab" style="color:var(--onDark2)">주는 것</p>
+        <h3 style="color:var(--ivory)">찬찬</h3>
+        <p class="gw cor" style="font-size:20px;margin-top:6px">앱 + 숫자</p>
+      </div>
+      <div class="arrowline"><em>앱 · 무료</em></div>
+      <div class="card dk" style="text-align:center">
+        <div class="icbox d" style="margin:0 auto 10px"><svg class="ic lg"><use href="#i-user"/></svg></div>
+        <p class="lab" style="color:var(--onDark2)">쓰는 사람</p>
+        <h3 style="color:var(--ivory)">어르신</h3>
+        <p class="gw cor" style="font-size:20px;margin-top:6px">0원 · 무제한</p>
+      </div>
+    </div>
+    <div class="grid c3" data-anim style="margin-top:4px">
+      <div class="card dk"><p class="sm">가장 위험한 순간에 결제창을 만나면 안 됩니다. <b>어르신 화면에는 유료 기능이 없습니다.</b></p></div>
+      <div class="card dk"><p class="sm">지자체는 관내 어르신 보호 사업과 성과 보고가, 금융기관은 고객 피해 예방과 규제 대응이 필요합니다.</p></div>
+      <div class="card dk"><p class="sm">기관은 <b>집계 리포트</b>를 받습니다. 담당자의 현장 업무는 QR 공지 한 장입니다.</p></div>
+    </div>
+  </div>
+  <p class="note" style="color:var(--ivory);font-size:16px">
+    <b>복지관은 사라지지 않습니다</b> — 지역 계약의 현장 창구이자 소규모 직접 계약 고객입니다.
+    <span style="color:var(--onDark2)">기관은 집계 숫자만 봅니다. 누가 무엇을 확인했는지는 기관도 찬찬도 알 수 없습니다.</span></p>
+</section>
+
+<!-- ══ 17 가격 ══ -->
+<section class="s ivory" data-sec="사업" data-title="가격">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-coin"/></svg>가격</p>
+    <h2>기관의 크기와 보호 범위에 맞춰 가격을 나눕니다</h2>
+  </header>
+  <div class="body">
+    <div class="grid c5">
+      <div class="card mist tap" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-gov"/></svg></div>
+        <p class="lab">기초지자체</p><b class="big s3 grn">2,000만</b><p class="note">226곳 · 1순위</p>
+        <div class="more"><b>근거</b> 1인 견적 수의계약 한도 2,000만. 원주시 AI 안부전화 2,000만(400여 명). 65세+ 중앙값 3.66만 명 → <b>1인 547원</b></div></div>
+      <div class="card mist tap" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-gov"/></svg></div>
+        <p class="lab">광역지자체</p><b class="big s3 grn">1억</b><p class="note">17곳 · 1순위</p>
+        <div class="more"><b>근거</b> 광역 65세+ 중앙값 52만 명 → <b>1인 192원</b>. 기초 5곳 값. 입찰 절차 필요</div></div>
+      <div class="card mist tap" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-bank"/></svg></div>
+        <p class="lab">대형 은행</p><b class="big s3 grn">2억</b><p class="note">약 12곳 · 1순위</p>
+        <div class="more"><b>근거</b> 은행권 피해 5,870억(2025). 신한 보이스피싱제로 300억/4년. 연 75억의 약 2.7%</div></div>
+      <div class="card mist tap" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-bank"/></svg></div>
+        <p class="lab">중앙회 · 지방 · 인터넷</p><b class="big s3 grn" style="font-size:23px">1억 · 5,000만</b><p class="note">5곳 · 약 8곳</p>
+        <div class="more"><b>근거</b> 상호금융 조합 · 금고 3,437곳(2026.6). <b>공개 단가가 없어 가정입니다</b></div></div>
+      <div class="card oat tap" data-anim><div class="icbox gray sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-people"/></svg></div>
+        <p class="lab">복지관 · 치매안심</p><b class="big s3 grn">600만</b><p class="note">710곳 · 2순위</p>
+        <div class="more"><b>근거</b> 연 150명 가정 → <b>1인 4만원</b>. 지자체 안부전화 1인 약 5만원과 비슷</div></div>
+    </div>
+    <div class="split even" style="margin-top:2px">
+      <div class="card mist mid" data-anim>
+        <div class="icbox g sm"><svg class="ic sm"><use href="#i-check"/></svg></div>
+        <p class="sm"><b>포함</b> — 전 기능 무제한 · 가족 자동 알림 · 분기 성과 리포트 · 설치 키트 · 원격 도움.
+          <b>강사 방문은 없습니다.</b> 모두 연간 · 부가세 별도.</p>
+      </div>
+      <div class="card oat" data-anim>
+        <p class="sm"><b>첫 계약은 작게</b> — 첫 복지관 레퍼런스 협약은 <b>480만원</b>(사례 공개 동의 조건).
+          광역 · 대형 은행은 실적이 생긴 뒤 영업합니다.</p>
+      </div>
+    </div>
+  </div>
+  <p class="note">카드를 누르면 금액 근거가 열립니다. <svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> 은행 금액은 공개 단가가 아니라 예산 · 피해 규모로 세운 <b>가설</b>이며 인터뷰 3곳 이상으로 검증합니다.</p>
+</section>
+
+<!-- ══ 18 성과 입증 ══ -->
+<section class="s" data-sec="사업" data-title="성과 입증 구조">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-chart"/></svg>성과 입증 구조</p>
+    <h2>예방 성과를 숫자로 입증하고, 그 숫자로 예산을 받습니다</h2>
+  </header>
+  <div class="body">
+    <div class="steps" data-anim>
+      <button class="step on" data-step="0"><div class="icbox g sm"><svg class="ic sm"><use href="#i-flag"/></svg></div>
+        <b>① 시범</b><span>기초지자체 또는 금융기관 1곳</span></button>
+      <button class="step" data-step="1"><div class="icbox g sm"><svg class="ic sm"><use href="#i-target"/></svg></div>
+        <b>② 측정</b><span>동의한 어르신을 나눠 모의 문자로 비교</span></button>
+      <button class="step" data-step="2"><div class="icbox g sm"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+        <b>③ 리포트</b><span>위험 행동 감소와 해결 단계를 집계</span></button>
+      <button class="step" data-step="3"><div class="icbox g sm"><svg class="ic sm"><use href="#i-book"/></svg></div>
+        <b>④ 계약</b><span>기본료 + 성과 리포트로 연간 계약</span></button>
+      <button class="step" data-step="4"><div class="icbox g sm"><svg class="ic sm"><use href="#i-coin"/></svg></div>
+        <b>⑤ 갱신</b><span>숫자가 다음 해 예산 근거가 됨</span></button>
+    </div>
+    <table class="tbl ink" id="proveTbl" data-anim>
+      <thead><tr><th style="width:110px">단계</th><th>무엇을 재나</th><th>어떻게</th><th>말할 수 있는 것</th></tr></thead>
+      <tbody>
+        <tr data-row="0"><td class="k">1 · 사용</td><td>혼자 설치율 · 14일 유지율</td><td>앱 집계 (원문 없음)</td><td class="gr">어르신이 실제로 쓴다</td></tr>
+        <tr data-row="1"><td class="k">2 · 행동</td><td>모의 문자 클릭 · 답장 감소율</td><td>찬찬 사용군 vs 비교군, 사전 동의</td><td class="gr">위험 행동이 줄었다 — 핵심 입증</td></tr>
+        <tr data-row="2"><td class="k">3 · 해결</td><td>경고 후 멈춤 · 확인 · 신고 완료율</td><td>앱 집계</td><td class="gr">경고 뒤 조치까지 갔다</td></tr>
+        <tr data-row="3"><td class="k">4 · 피해</td><td>실제 피해 건수 · 금액 비교</td><td>금융기관 이상거래 · 경찰 자료와 대조</td><td class="gr">대규모 계약 후 장기 입증</td></tr>
+      </tbody>
+    </table>
+    <div class="card amberbg mid" data-anim>
+      <div class="icbox a sm"><svg class="ic sm"><use href="#i-q"/></svg></div>
+      <p class="sm"><b>왜 피해 건수로 바로 입증하지 않나</b> — 2025년 60대 이상 피해는 1만 명당 약 4.8건입니다.
+        시범 2,000명이면 1년에 약 1건이 기대값이라 차이를 볼 수 없습니다. 그래서 <b>모의 문자 행동 변화</b>로 먼저 입증합니다.</p>
+    </div>
+  </div>
+  <p class="note">측정 설계는 계획이며 아직 실측이 아닙니다. 모의 훈련은 사전 동의와 자문 검토 후 진행합니다.</p>
+</section>
+
+<!-- ══ 19 사업 경제성 ══ -->
+<section class="s ivory" data-sec="사업" data-title="사업 경제성">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-chart"/></svg>사업 경제성</p>
+    <h2>손익분기 연 매출 약 1.16억원 — 2028년 통과 목표</h2>
+  </header>
+  <div class="body">
+    <div class="grid c3">
+      <div class="card mist mid" data-anim="pop"><div class="icbox g sm"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+        <div><p class="lab">공헌이익률</p><b class="big s3 grn">약 98%</b><p class="note">전체 비용 반영 전</p></div></div>
+      <div class="card mist mid" data-anim="pop"><div class="icbox g sm"><svg class="ic sm"><use href="#i-coin"/></svg></div>
+        <div><p class="lab">1 · 2년차 고정비</p><b class="big s3 grn">1.14억원</b><p class="note">월 700만 + 엔진 협력 연 3,000만 (가정)</p></div></div>
+      <div class="card mist mid" data-anim="pop"><div class="icbox g sm"><svg class="ic sm"><use href="#i-target"/></svg></div>
+        <div><p class="lab">손익분기 예시</p><b class="gw grn" style="font-size:19px">기초 2 + 지방 금융 1 + 복지관 5</b><p class="note">1.2억원</p></div></div>
+    </div>
+    <div class="split even">
+      <table class="tbl" data-anim>
+        <thead><tr><th>계약 유형</th><th style="text-align:right">연 매출</th><th style="text-align:right">공헌이익</th><th style="text-align:right">영업 기간</th></tr></thead>
+        <tbody>
+          <tr><td class="k">기초지자체</td><td class="num">2,000만</td><td class="num gr">1,980만</td><td class="num">6개월</td></tr>
+          <tr><td class="k">광역지자체</td><td class="num">1억</td><td class="num gr">9,900만</td><td class="num">12개월</td></tr>
+          <tr><td class="k">대형 은행</td><td class="num">2억</td><td class="num gr">1.97억</td><td class="num">12~18개월</td></tr>
+          <tr><td class="k">중앙회</td><td class="num">1억</td><td class="num gr">9,800만</td><td class="num">12개월</td></tr>
+          <tr><td class="k">지방 · 인터넷</td><td class="num">5,000만</td><td class="num gr">4,900만</td><td class="num">9~12개월</td></tr>
+          <tr><td class="k">복지관</td><td class="num">600만</td><td class="num gr">580만</td><td class="num">3개월</td></tr>
+        </tbody>
+      </table>
+      <table class="tbl ink" data-anim>
+        <thead><tr><th style="text-align:right">연도</th><th style="text-align:right">매출</th><th style="text-align:right">고정비</th><th style="text-align:right">영업이익</th></tr></thead>
+        <tbody>
+          <tr><td class="num k">2027</td><td class="num">0.3억</td><td class="num">1.14억</td><td class="num br">-0.85억</td></tr>
+          <tr style="background:var(--mist)"><td class="num k">2028 ★</td><td class="num">1.2억</td><td class="num">1.14억</td><td class="num gr">+0.04억</td></tr>
+          <tr><td class="num k">2029</td><td class="num">3.8억</td><td class="num">2.4억</td><td class="num gr">+1.3억</td></tr>
+          <tr><td class="num k">2030</td><td class="num">10.2억</td><td class="num">5억</td><td class="num gr">+5.1억</td></tr>
+          <tr><td class="num k">2031</td><td class="num">27억</td><td class="num">12억</td><td class="num gr">+14.5억</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="note"><svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> 고정비 · 변동비 · 영업 기간과 AXistant 비용은 찬찬의 가정입니다. 판매 실적이 없어 LTV : CAC는 넣지 않았습니다. 변동비는 계약당 20만~300만(가정).</p>
+</section>
+
+<!-- ══ 20 시장 ══ -->
+<section class="s" data-sec="사업" data-title="시장 TAM · SAM · SOM">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-globe"/></svg>시장</p>
+    <h2>전 세계에서 출발해, 한국과 아세안에서 먼저 얻습니다</h2>
+  </header>
+  <div class="body split even">
+    <div class="rings" data-anim="pop">
+      <div class="ring r1" data-k="TAM · 전 세계" data-v="$6.3B (약 8.8조원)"
+        data-t="65세 이상 8.36억 명 × 스마트폰 50%(가정) × 1인 연 $15"><span><b>TAM</b><i>$6.3B</i></span></div>
+      <div class="ring r2" data-k="SAM · 한국 + 미국 + 싱가포르 + 기타 아세안" data-v="$83.6M (약 1,170억원)"
+        data-t="기관 구매자 수 × 단가. SAM 의 77%는 미국이고 해외 단가는 가정입니다."><span><b>SAM</b><i>$83.6M</i></span></div>
+      <div class="ring r3 sel" data-k="SOM · 2031, 미국 제외" data-v="약 27억원 ($1.9M)"
+        data-t="한국 20.5억 + 싱가포르 4.5억 + 기타 아세안 2억 = 미국 제외 SAM 269억의 10%"><span><b>SOM</b><i>27억</i></span></div>
+    </div>
+    <div class="rows">
+      <div class="card mist" id="mkInfo" data-anim="right" style="min-height:124px">
+        <p class="lab">SOM · 2031, 미국 제외</p>
+        <b class="big s3 grn">약 27억원 ($1.9M)</b>
+        <p class="sm" style="margin-top:6px">한국 20.5억 + 싱가포르 4.5억 + 기타 아세안 2억 = 미국 제외 SAM 269억의 10%</p>
+      </div>
+      <p class="note" data-anim="right">원을 눌러 보세요.</p>
+      <div class="rows" data-anim="right">
+        <div class="hbar"><span class="t sm">한국 지자체</span>
+          <div class="rail"><div class="fillbar" style="--w:7%"></div></div><span class="n">62.2억</span></div>
+        <div class="hbar"><span class="t sm">한국 금융</span>
+          <div class="rail"><div class="fillbar" style="--w:4%"></div></div><span class="n">33억</span></div>
+        <div class="hbar"><span class="t sm">한국 복지 현장</span>
+          <div class="rail"><div class="fillbar" style="--w:5%"></div></div><span class="n">42.6억</span></div>
+        <div class="hbar"><span class="t sm">미국</span>
+          <div class="rail"><div class="fillbar" style="--w:100%;background:#C9D4CD"></div></div><span class="n slate">900.6억</span></div>
+        <div class="hbar"><span class="t sm">싱가포르</span>
+          <div class="rail"><div class="fillbar" style="--w:2.5%"></div></div><span class="n">20.8억</span></div>
+        <div class="hbar"><span class="t sm">기타 아세안</span>
+          <div class="rail"><div class="fillbar" style="--w:12%"></div></div><span class="n">110.5억</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note"><svg class="ic" aria-hidden="true" style="width:16px;height:16px;vertical-align:-2px;color:var(--amber)"><use href="#i-warn"/></svg> SAM의 77%는 미국이고 해외 단가는 가정입니다. 태국 18곳은 2차 자료입니다. 아세안은 언어와 메신저 경로 대응이 전제입니다. $1 = 1,400원.</p>
+</section>
+
+<!-- ══ 21 매출 계획 ══ -->
+<section class="s ivory" data-sec="사업" data-title="매출 계획">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-chart"/></svg>매출 계획</p>
+    <h2>지자체로 증명하고, 금융기관으로 키우고, 아세안으로 넓힙니다</h2>
+  </header>
+  <div class="body split even">
+    <div class="rows fill">
+      <div class="bars fill" id="bars">
+        <div class="barwrap" data-y="0"><span class="v">0.3억</span><div class="col"><div class="bar" style="--h:4%"></div></div><span class="y">2027</span></div>
+        <div class="barwrap bep on" data-y="1"><span class="v">1.2억</span><div class="col"><div class="bar" style="--h:12%"></div></div><span class="y">2028</span></div>
+        <div class="barwrap" data-y="2"><span class="v">3.8억</span><div class="col"><div class="bar" style="--h:32%"></div></div><span class="y">2029</span></div>
+        <div class="barwrap" data-y="3"><span class="v">10.2억</span><div class="col"><div class="bar" style="--h:60%"></div></div><span class="y">2030</span></div>
+        <div class="barwrap" data-y="4"><span class="v">27억</span><div class="col"><div class="bar" style="--h:94%"></div></div><span class="y">2031</span></div>
+      </div>
+      <p class="note">막대를 누르면 그 해의 구성이 열립니다. ★ 은 손익분기입니다.</p>
+    </div>
+    <div class="rows" id="plan">
+      <div class="card tap" data-y="0" data-anim="right" style="padding:13px 16px"><b>2027 · 약 3,000만원</b>
+        <p class="note">기초 1곳 · 복지관 레퍼런스 2곳</p></div>
+      <div class="card tap" data-y="1" data-anim="right" style="padding:13px 16px"><b class="brick">2028 · 1.2억원 ★ 손익분기</b>
+        <p class="note">기초 2 · 지방 금융 1 · 복지관 5</p></div>
+      <div class="card tap" data-y="2" data-anim="right" style="padding:13px 16px"><b>2029 · 3.8억원</b>
+        <p class="note">기초 8 · 광역 1 · 지방 금융 2 · 복지관 3</p></div>
+      <div class="card tap" data-y="3" data-anim="right" style="padding:13px 16px"><b>2030 · 약 10.2억원</b>
+        <p class="note">기초 15 · 광역 2 · 대형 은행 1 · 중앙회 1 · 지방 금융 2 · 복지관 10 · 싱가포르 AAC 10</p></div>
+      <div class="card tap" data-y="4" data-anim="right" style="padding:13px 16px"><b>2031 · 약 27억원</b>
+        <p class="note">한국 20.5억 · 싱가포르 4.5억 · 기타 아세안 2억</p></div>
+    </div>
+  </div>
+  <p class="note">목표 수치이며 계약 실적이 아닙니다. 미국은 2031 목표에 넣지 않았습니다.</p>
+</section>
+
+<!-- ══ 22 진입 전략 ══ -->
+<section class="s" data-sec="실행" data-title="진입 전략">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-map"/></svg>진입 전략</p>
+    <h2>기초지자체 → 금융기관 → 광역 · 중앙회 → 아세안</h2>
+  </header>
+  <div class="body">
+    <div class="grid c4">
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-gov"/></svg></div>
+        <h4 class="grn">기초지자체</h4><p class="sm">시범으로 시작해 2,000만원 수의계약 첫 사례를 만듭니다. 복지관이 현장 창구를 맡습니다.</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-bank"/></svg></div>
+        <h4 class="grn">지방 금융</h4><p class="sm">핀테크지원센터 멘토링으로 수요와 예산 부서를 확인하고, 지방 · 인터넷은행 1곳부터.</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+        <h4 class="grn">광역 · 대형</h4><p class="sm">실적으로 광역 지자체, 중앙회, 대형 은행으로. 입찰과 보안 심사를 준비합니다.</p></div>
+      <div class="card mist" data-anim><div class="icbox g sm" style="margin-bottom:8px"><svg class="ic sm"><use href="#i-globe"/></svg></div>
+        <h4 class="grn">아세안</h4><p class="sm">은행 분담 책임 규제가 있는 싱가포르를 먼저, 이어 태국 · 말레이시아.</p></div>
+    </div>
+    <div class="split even">
+      <div class="card" data-anim>
+        <div class="mid" style="margin-bottom:9px"><div class="icbox r sm"><svg class="ic sm"><use href="#i-q"/></svg></div>
+          <h4 class="brick">금융기관에 먼저 확인할 것</h4></div>
+        <ul class="sm"><li>어느 부서가 예산을 갖는가 (소비자보호 · 사회공헌 · 디지털)</li>
+          <li>2억 · 5,000만원이 받아들여지는가</li>
+          <li>고객 안내와 보안 심사에 필요한 것</li>
+          <li>무과실 배상 법안이 구매 시점을 바꾸는가</li></ul>
+      </div>
+      <div class="card" data-anim>
+        <div class="mid" style="margin-bottom:9px"><div class="icbox r sm"><svg class="ic sm"><use href="#i-stop"/></svg></div>
+          <h4 class="brick">중단 기준 — 먼저 정해 둡니다</h4></div>
+        <ul class="sm"><li>혼자 설치 완료율 60% 목표 · <b>40% 미만이면 웹으로 재설계</b></li>
+          <li>14일 유지율 70% 목표 · <b>50% 미만이면 설치 흐름 재설계</b></li>
+          <li>경고 후 행동률 50% 목표 · <b>30% 미만이면 알림 형태부터 다시</b></li></ul>
+      </div>
+    </div>
+  </div>
+  <p class="note">근거: MAS · IMDA Shared Responsibility Framework(2024.12 시행) · 태국 기술범죄 긴급칙령 개정(2025.4).</p>
+</section>
+
+<!-- ══ 23 로드맵 ══ -->
+<section class="s ivory" data-sec="실행" data-title="로드맵">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-clock"/></svg>로드맵</p>
+    <h2>모두의창업 — 실행 순서</h2>
+  </header>
+  <div class="body" data-anim>
+    <table class="tbl">
+      <thead><tr><th style="width:120px">단계</th><th style="width:170px">시기</th><th>하는 일</th><th style="width:200px">끝났다는 기준</th></tr></thead>
+      <tbody>
+        <tr><td class="k">1R</td><td>~11.30</td><td>멘토링 4회 · 가족 시범 · 사용성 테스트 · 기관 면담 · 정확도 기준선 · 플레이 비공개 테스트 · 상표 출원</td><td class="gr">면담 기록 · 탭 수 실측</td></tr>
+        <tr><td class="k">제출</td><td>12.1</td><td>사업계획서 + 창업활동보고서</td><td class="gr">제출</td></tr>
+        <tr><td class="k">다음 단계</td><td>2026.12~2027 상반기</td><td>플레이 출시(12월 목표) · 기초지자체 시범 · 모의 문자 측정 · AXistant와 판정 엔진 강화</td><td class="gr">시범 1곳+ · 측정 결과</td></tr>
+        <tr style="background:var(--blush)"><td class="k">첫 유료 ★</td><td>2027 하반기</td><td>기초지자체 1곳 계약 · 복지관 레퍼런스 2곳</td><td class="gr">2027 매출 0.3억</td></tr>
+        <tr><td class="k">금융 · 광역</td><td>2028~2029</td><td>지방 금융 첫 계약 · 광역 1곳 · 보안 심사 대응</td><td class="gr">2029 매출 3.8억</td></tr>
+        <tr><td class="k">대형 · 아세안</td><td>2030~2031</td><td>대형 은행 · 중앙회 · 싱가포르 → 태국 · 말레이시아 등</td><td class="gr">2031 매출 약 27억</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">12월 이후 날짜는 목표입니다. 2028년 손익분기 통과 목표.</p>
+</section>
+
+<!-- ══ 24 1라운드 실행 ══ -->
+<section class="s" data-sec="실행" data-title="1라운드 실행">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-coin"/></svg>1라운드 실행</p>
+    <h2>지원금은 증거로 — 창업활동자금 200만원</h2>
+  </header>
+  <div class="body split wide">
+    <div class="rows" data-anim>
+      <div class="hbar"><span class="t sm">상표 출원</span><div class="rail"><div class="fillbar" style="--w:66%"></div></div><span class="n">29.88만</span></div>
+      <div class="hbar"><span class="t sm">사용성 테스트</span><div class="rail"><div class="fillbar" style="--w:100%"></div></div><span class="n">45만</span></div>
+      <div class="hbar"><span class="t sm">정답 검수</span><div class="rail"><div class="fillbar" style="--w:89%"></div></div><span class="n">40만</span></div>
+      <div class="hbar"><span class="t sm">법률 · 보안 자문</span><div class="rail"><div class="fillbar" style="--w:67%"></div></div><span class="n">30만</span></div>
+      <div class="hbar"><span class="t sm">영업 키트 인쇄</span><div class="rail"><div class="fillbar" style="--w:44%"></div></div><span class="n">20만</span></div>
+      <div class="hbar"><span class="t sm">테스트 단말기</span><div class="rail"><div class="fillbar" style="--w:44%"></div></div><span class="n">20만</span></div>
+      <div class="hbar"><span class="t sm">방문 · 미팅</span><div class="rail"><div class="fillbar" style="--w:22%"></div></div><span class="n">10만</span></div>
+      <div class="hbar"><span class="t sm">통계 리포트</span><div class="rail"><div class="fillbar" style="--w:11%"></div></div><span class="n">5만</span></div>
+      <p class="sm" style="text-align:right"><b>합계 199.88만</b> <span class="slate">(예비 1,200원)</span></p>
+    </div>
+    <div class="rows">
+      <div class="card mist" data-anim="right">
+        <p class="kicker" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-check"/></svg>1R 끝(11.30)까지 손에 쥘 것</p>
+        <p class="sm">기관 접촉 기록(연락 30 · 방문 5 · 시범 의향 1+) · 가족 시범 사용 기록 · 사용성 테스트 결과(탭 수 · 혼자 설치율)
+          · 판정 정확도 기준선 · 상표 출원번호 · 자문 의견서 · 멘토링 4회 보고서</p>
+      </div>
+      <div class="card oat" data-anim="right">
+        <p class="kicker" style="margin-bottom:9px"><svg class="ic sm"><use href="#i-spark"/></svg>AI 솔루션 · 11월</p>
+        <p class="sm">로폼(규제 · 계약서) · 캐치시큐(개인정보 확인서) · 핸디핏(시범 신청 랜딩) · 빠나나(2분 영상) · 비즈포지(인터뷰 질문)</p>
+      </div>
+    </div>
+  </div>
+  <p class="note">모든 항목에 「남는 증거」가 붙어 있습니다 — 출원번호 · 설치 완료율 실측 · 오탐 기준선 · 자문 의견서 · 방문 기록.</p>
+</section>
+
+<!-- ══ 25 리스크 ══ -->
+<section class="s ivory" data-sec="실행" data-title="리스크와 대응">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-warn"/></svg>리스크와 대응</p>
+    <h2>미리 적어 둔 것 — 아홉 가지</h2>
+  </header>
+  <div class="body split wide">
+    <div class="grid c3" id="risks" style="gap:11px">
+      <button class="card tap on" data-r="0" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-lock"/></svg></div><b class="sm">Play 문자 권한</b></button>
+      <button class="card tap" data-r="1" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-warn"/></svg></div><b class="sm">판정이 틀릴 때</b></button>
+      <button class="card tap" data-r="2" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-coin"/></svg></div><b class="sm">금융 단가 미검증</b></button>
+      <button class="card tap" data-r="3" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-rules"/></svg></div><b class="sm">기술 협력 의존</b></button>
+      <button class="card tap" data-r="4" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-flag"/></svg></div><b class="sm">선발주자</b></button>
+      <button class="card tap" data-r="5" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-shield"/></svg></div><b class="sm">무료 대안</b></button>
+      <button class="card tap" data-r="6" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-stop"/></svg></div><b class="sm">찬찬 사칭 앱</b></button>
+      <button class="card tap" data-r="7" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-globe"/></svg></div><b class="sm">해외 근거</b></button>
+      <button class="card tap" data-r="8" style="padding:13px;text-align:left" data-anim><div class="icbox r sm" style="margin-bottom:7px"><svg class="ic sm"><use href="#i-target"/></svg></div><b class="sm">성과 입증 실패</b></button>
+    </div>
+    <div class="card fill" id="riskInfo" data-anim="right"></div>
+  </div>
+  <p class="note">왼쪽을 누르면 「왜」와 「대응」이 오른쪽에 열립니다.</p>
+</section>
+
+<!-- ══ 26 팀 ══ -->
+<section class="s dark" data-sec="실행" data-title="팀 · 다음 단계">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-people"/></svg>팀 · 다음 단계</p>
+    <h2>꾸준한 테스팅으로 개선 및 보완 필요</h2>
+  </header>
+  <div class="body split even">
+    <div class="rows">
+      <div class="card dk mid" data-anim="left">
+        <div class="icbox d"><svg class="ic lg"><use href="#i-user"/></svg></div>
+        <div><h4 style="color:var(--ivory)">정수진 · CEO / Founder</h4>
+          <p class="sm">기계공학 전공 · 경영학 석사 · 외국계 IT 프로그램 매니저(마케팅 · 세일즈) ·
+            스타트업 프로덕트 오너. <b style="color:var(--onDark2)">찬찬을 직접 설계합니다.</b></p></div>
+      </div>
+      <div class="card dk mid" data-anim="left">
+        <div class="icbox d"><svg class="ic lg"><use href="#i-bank"/></svg></div>
+        <div><h4 style="color:var(--ivory)">정운모 · CBO</h4>
+          <p class="sm">보험회사 사장 — 금융권 경영 · 영업 조직 운영. 기관 파트너십 · 금융권 영업 · 수익화 전략을 이끕니다.</p></div>
+      </div>
+      <div class="card dk mid" data-anim="left">
+        <div class="icbox d" style="color:var(--coral)"><svg class="ic lg"><use href="#i-rules"/></svg></div>
+        <div><h4 class="cor">협력사 AXistant · 대표 김태환</h4>
+          <p class="sm">판정 엔진 개발 · 고도화 담당 (협약 협의 중). 대표와 직접 협업합니다.</p></div>
+      </div>
+    </div>
+    <div class="card dk fill" data-anim="right">
+      <p class="kicker cor" style="margin-bottom:12px"><svg class="ic sm"><use href="#i-hand"/></svg>부족한 것 · 도움이 필요한 곳</p>
+      <ul style="gap:13px">
+        <li>금융기관 예산 부서 연결 — 소비자보호 · 사회공헌</li>
+        <li>지자체 시범 1곳 소개와 계약 실무</li>
+        <li>금융 · 공공 계약 단가 검증 자료</li>
+        <li>보안 심사 · 규제 요건 검토</li>
+        <li>모의 문자 측정 설계 자문</li>
+        <li>싱가포르 은행 · AIC 연결</li>
+      </ul>
+      <p class="gw cor" style="font-size:25px;margin-top:20px">급할수록 찬찬히</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 27 린 캔버스 ══ -->
+<section class="s" data-sec="요약" data-title="린 캔버스">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-book"/></svg>린 캔버스</p>
+    <h2>찬찬 한 장 요약</h2>
+  </header>
+  <div class="body" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+       grid-template-rows:auto auto;gap:9px" data-anim>
+    <div class="card" style="padding:13px"><h4 class="grn sm">문제</h4>
+      <ul class="note" style="gap:5px;margin-top:6px"><li>60대 이상이 피해의 3분의 1</li><li>문자를 혼자 판단하고 경고 뒤 행동을 모름</li>
+        <li>기관은 예방 성과를 입증하기 어려움</li><li>대안 — 자녀 · 보호나라 · 시티즌코난</li></ul></div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card" style="padding:13px"><h4 class="grn sm">해결</h4>
+        <ul class="note" style="gap:5px;margin-top:6px"><li>폰 안 3등급 판정 + 근거</li><li>막기 · 확인 · 피해 대응까지</li><li>연습형 온보딩 · 성과 리포트</li></ul></div>
+      <div class="card" style="padding:13px"><h4 class="grn sm">핵심 지표</h4>
+        <ul class="note" style="gap:5px;margin-top:6px"><li>혼자 설치 완료율</li><li>모의 문자 위험 행동 감소율</li><li>경고 후 해결 완료율</li><li>유료 계약 수 · 갱신율</li></ul></div>
+    </div>
+    <div class="card mist" style="padding:13px"><h4 class="grn sm">고유 가치</h4>
+      <ul class="note" style="gap:5px;margin-top:6px"><li>어르신이 혼자 시작하고, 해결까지 함께 갑니다</li><li>「급할수록 찬찬히」</li>
+        <li>어르신 화면에는 광고 · 결제 없음</li><li>예방 성과를 숫자로 입증</li></ul></div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card" style="padding:13px"><h4 class="grn sm">경쟁 우위</h4>
+        <ul class="note" style="gap:5px;margin-top:6px"><li>창업자의 직접 피해 경험</li><li>시범 데이터 축적(시범 후)</li><li>AXistant 협력(협의 중)</li><li>아직 검증 중</li></ul></div>
+      <div class="card" style="padding:13px"><h4 class="grn sm">채널</h4>
+        <ul class="note" style="gap:5px;margin-top:6px"><li>지자체 수의계약 · 입찰</li><li>핀테크지원센터 · CBO</li><li>복지관 현장 · QR</li><li>싱가포르 은행 · AIC</li></ul></div>
+    </div>
+    <div class="card" style="padding:13px"><h4 class="grn sm">고객</h4>
+      <ul class="note" style="gap:5px;margin-top:6px"><li>사용자 — 75세+ · 구형 안드로이드 · 혼자 판단</li><li>구매자 1순위 — 지자체 · 은행 · 중앙회</li>
+        <li>2순위 — 복지관 · 치매안심센터</li><li>얼리어답터 — 기초 1곳 · 지방 금융 1곳</li></ul></div>
+    <div class="card" style="padding:13px;grid-column:span 3"><h4 class="grn sm">비용 구조</h4>
+      <p class="note" style="margin-top:6px">1 · 2년차 고정비 연 1.14억원 (인건비 · 운영 + AXistant 연 3,000만 가정) · 계약당 변동비 20만~300만(가정) · 2029년 채용 확대</p></div>
+    <div class="card mist" style="padding:13px;grid-column:span 2"><h4 class="grn sm">수익원</h4>
+      <p class="note" style="margin-top:6px">어르신 0원 · 기관 연간 계약(부가세 별도). 기초 2,000만 · 광역 1억 · 대형 은행 2억 · 중앙회 1억 · 지방 5,000만 · 복지관 600만</p></div>
+  </div>
+</section>
+
+<!-- ══ 28 숫자 한 장 ══ -->
+<section class="s dark" data-sec="요약" data-title="숫자 한 장">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-target"/></svg>한 장 요약</p>
+    <h2>기억하실 숫자 여섯</h2>
+  </header>
+  <div class="body grid c3">
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-people"/></svg></div>
+      <b class="big s2 cor"><span data-count="34.4">0</span>%</b>
+      <p class="sm" style="margin-top:7px">보이스피싱 피해의 60대 이상 비중 (2026.1~8)</p></div>
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-msg"/></svg></div>
+      <b class="big s2 cor"><span data-count="2574" data-sep>0</span><span style="font-size:22px">만원</span></b>
+      <p class="sm" style="margin-top:7px">스미싱 건당 피해액 — 1년 만에 2.1배</p></div>
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-rules"/></svg></div>
+      <b class="big s2 cor"><span data-count="1221" data-sep>0</span><span style="font-size:22px">건</span></b>
+      <p class="sm" style="margin-top:7px">규칙을 바꿀 때마다 대조하는 기준 사례</p></div>
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-coin"/></svg></div>
+      <b class="big s2 cor">0<span style="font-size:22px">원</span></b>
+      <p class="sm" style="margin-top:7px">어르신이 내는 돈 — 광고도 결제창도 없습니다</p></div>
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-chart"/></svg></div>
+      <b class="big s2 cor">1.16<span style="font-size:22px">억원</span></b>
+      <p class="sm" style="margin-top:7px">손익분기 연 매출 — 2028년 통과 목표</p></div>
+    <div class="card dk" data-anim="pop"><div class="icbox d sm" style="margin-bottom:10px"><svg class="ic sm"><use href="#i-globe"/></svg></div>
+      <b class="big s2 cor"><span data-count="27">0</span><span style="font-size:22px">억원</span></b>
+      <p class="sm" style="margin-top:7px">2031 목표 매출 (SOM · 미국 제외)</p></div>
+  </div>
+  <p class="note" style="color:var(--onDark2);font-size:16px">숫자의 출처는 다음 장에 전부 있습니다.</p>
+</section>
+
+<!-- ══ 29 부록 ══ -->
+<section class="s ivory" data-sec="요약" data-title="부록 · 숫자 출처">
+  <header>
+    <p class="kicker"><svg class="ic sm"><use href="#i-book"/></svg>부록 · 숫자 출처</p>
+    <h2 class="sm">이 덱의 숫자와 출처</h2>
+  </header>
+  <div class="body">
+    <div class="filters" data-anim>
+      <input type="search" id="q" placeholder="숫자나 출처로 찾기 (예: 경찰청)" aria-label="출처 찾기"
+        style="font:inherit;font-size:15px;padding:8px 15px;border-radius:99px;border:1px solid var(--line);background:var(--card);min-width:230px;color:var(--ink)">
+      <span id="chapters" style="display:flex;gap:7px;flex-wrap:wrap"></span>
+      <span class="note" id="foundN"></span>
+    </div>
+    <div class="pane fill" data-anim>
+      <table class="tbl"><thead><tr>
+        <th style="width:120px">장</th><th>숫자</th><th style="width:210px">기준</th><th style="width:270px">출처</th>
+      </tr></thead><tbody id="srcBody"></tbody></table>
+    </div>
+  </div>
+  <p class="note">「→」는 원자료 → 보도 경로입니다. 2026-10-30에 보도 원문과 대조했고, 공공기관 원자료까지 대조한 것은 아닙니다.
+    이 표는 <b>pitch/build_ir.js 에서 자동으로 뽑습니다</b> — 손으로 고치지 않습니다.</p>
+</section>
+
+</div><!-- /track -->
+</div><!-- /stage -->
+</main>
+
+<button class="arrow prev" id="prev" aria-label="앞 장">‹</button>
+<button class="arrow next" id="next" aria-label="다음 장">›</button>
+
+<div class="sheet" id="toc" role="dialog" aria-label="목차" aria-modal="true">
+  <button class="closer" id="tocClose">닫기 (Esc)</button>
+  <h3>목차</h3>
+  <p class="sub">누르면 그 장으로 갑니다. 키보드 ← → 로도 넘깁니다.</p>
+  <div class="toclist" id="tocList"></div>
+</div>
+
+<div class="lightbox" id="lb"><img id="lbImg" alt=""></div>
+
+<div class="rotate" id="rot">
+  <svg class="ic lg" style="width:54px;height:54px;color:var(--onDark2)"><use href="#i-phone"/></svg>
+  <b>가로로 돌려 주세요</b>
+  <p>이 덱은 발표 화면 비율(16:9)로 고정돼 있습니다. 세로로 보시면 글씨가 아주 작아집니다.</p>
+  <button class="f" id="rotGo">그래도 보기</button>
+</div>
+
+<script src="sources.js"></script>
+<script>
+(function(){
+  'use strict';
+  var track = document.getElementById('track');
+  var stage = document.getElementById('stage');
+  // ⚠️ 바로 아래 자식만 셉니다. `querySelectorAll('.s')` 로 하면 슬라이드가
+  //    아닌 요소가 `s` 라는 클래스를 갖는 순간 장 수가 틀어지고 가로 이동이
+  //    통째로 어긋납니다 (2026-11-09 에 `.icbox.s` 로 실제로 그랬습니다).
+  var slides = [].slice.call(track.children).filter(function(el){
+    return el.classList.contains('s');
+  });
+  var N = slides.length, i = 0, seen = {};
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 1280, H = 720;
+  document.getElementById('tot').textContent = N;
+
+  /* ── 무대 크기 맞추기 — 비율은 고정, 크기만 바뀝니다 ───── */
+  function fit(){
+    var deck = document.querySelector('.deck');
+    var pad = window.innerWidth < 700 ? 8 : 26;
+    var k = Math.min((deck.clientWidth - pad * 2) / W, (deck.clientHeight - pad * 2) / H);
+    stage.style.setProperty('--k', Math.max(.16, k));
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function(){ setTimeout(fit, 120); });
+
+  /* ── 상단 개요 바 ──────────────────────────────────────── */
+  var map = document.getElementById('map'), tocList = document.getElementById('tocList');
+  var ticks = [], tocs = [], lastSec = null, row = null;
+  slides.forEach(function(s, n){
+    var sec = s.getAttribute('data-sec') || '', title = s.getAttribute('data-title') || ('' + (n + 1));
+    if (sec !== lastSec) {
+      lastSec = sec;
+      var g = document.createElement('div'); g.className = 'sec';
+      var em = document.createElement('em'); em.textContent = sec;
+      row = document.createElement('div'); row.className = 'ticks';
+      g.appendChild(em); g.appendChild(row); map.appendChild(g);
+    }
+    var t = document.createElement('button');
+    t.className = 'tick'; t.type = 'button';
+    t.setAttribute('aria-label', (n + 1) + '. ' + title);
+    var tip = document.createElement('span');
+    tip.className = 'tip'; tip.setAttribute('data-n', n + 1); tip.textContent = title;
+    t.appendChild(tip);
+    t.addEventListener('click', function(){ go(n); });
+    row.appendChild(t); ticks.push(t);
+
+    var b = document.createElement('button');
+    b.className = 'toc'; b.type = 'button';
+    b.innerHTML = '<em>' + (n + 1) + ' · ' + sec + '</em><b></b>';
+    b.querySelector('b').textContent = title;
+    b.addEventListener('click', function(){ go(n); closeToc(); });
+    tocList.appendChild(b); tocs.push(b);
+  });
+
+  /* ── 장 넘기기 ─────────────────────────────────────────── */
+  var prev = document.getElementById('prev'), next = document.getElementById('next');
+  var bar = document.getElementById('bar'), cur = document.getElementById('cur');
+
+  function go(n){
+    n = Math.max(0, Math.min(N - 1, n));
+    i = n; seen[n] = true;
+    track.style.transform = 'translateX(' + (-W * n) + 'px)';
+    slides.forEach(function(s, k){
+      if (k === n) {
+        var kids = s.querySelectorAll('[data-anim]');
+        for (var j = 0; j < kids.length; j++) kids[j].style.setProperty('--d', j);
+        s.classList.add('is-active');
+        countUp(s);
+      } else s.classList.remove('is-active');
+      s.setAttribute('aria-hidden', k === n ? 'false' : 'true');
+    });
+    ticks.forEach(function(t, k){
+      t.classList.toggle('on', k === n);
+      t.classList.toggle('seen', !!seen[k] && k !== n);
+    });
+    tocs.forEach(function(b, k){ b.classList.toggle('on', k === n); });
+    cur.textContent = n + 1;
+    bar.style.width = ((n + 1) / N * 100) + '%';
+    prev.disabled = n === 0; next.disabled = n === N - 1;
+    if (location.hash !== '#' + (n + 1)) history.replaceState(null, '', '#' + (n + 1));
+  }
+  prev.addEventListener('click', function(){ go(i - 1); });
+  next.addEventListener('click', function(){ go(i + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'INPUT') return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(N - 1); }
+    else if (k === 'Escape') { closeToc(); closeLb(); }
+    else if (k === 'o' || k === 'O') { e.preventDefault(); openToc(); }
+  });
+
+  var x0 = null, y0 = null;
+  stage.addEventListener('touchstart', function(e){
+    var box = e.target.closest ? e.target.closest('.pane') : null;
+    if (box && box.scrollHeight > box.clientHeight + 4) { x0 = null; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) go(i + (dx < 0 ? 1 : -1));
+    x0 = y0 = null;
+  }, {passive:true});
+
+  /* ── 숫자 올라가기 ─────────────────────────────────────── */
+  function fmt(v, d, sep){
+    var t = v.toFixed(d);
+    if (!sep) return t;
+    var p = t.split('.');
+    p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return p.join('.');
+  }
+  function countUp(s){
+    var els = s.querySelectorAll('[data-count]');
+    [].forEach.call(els, function(el){
+      if (el.dataset.done) return;
+      el.dataset.done = '1';
+      var raw = el.getAttribute('data-count');
+      var to = parseFloat(raw), dp = (raw.split('.')[1] || '').length;
+      var sep = el.hasAttribute('data-sep');
+      if (reduce) { el.textContent = fmt(to, dp, sep); return; }
+      var t0 = null, ms = 900;
+      function step(ts){
+        if (t0 === null) t0 = ts;
+        var p = Math.min(1, (ts - t0) / ms), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(to * e, dp, sep);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* ── 눌러서 펼치기 ─────────────────────────────────────── */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest ? e.target.closest('.tap') : null;
+    if (t && !t.hasAttribute('data-r') && !t.hasAttribute('data-y') &&
+        !e.target.closest('[data-lb]') && !e.target.closest('.f')) t.classList.toggle('open');
+  });
+
+  /* ── 기능 가려 보기 ────────────────────────────────────── */
+  var feats = document.getElementById('feats');
+  if (feats) {
+    var cards = [].slice.call(feats.children), fNote = document.getElementById('fNote');
+    [].forEach.call(document.querySelectorAll('[data-filter]'), function(btn){
+      btn.addEventListener('click', function(){
+        var want = btn.getAttribute('data-filter');
+        [].forEach.call(document.querySelectorAll('[data-filter]'), function(b){
+          b.classList.toggle('on', b === btn);
+        });
+        var shown = 0;
+        cards.forEach(function(c){
+          var ok = want === 'all' || c.getAttribute('data-st') === want;
+          c.classList.toggle('hide', !ok);
+          if (ok) shown++;
+        });
+        fNote.textContent = shown + '개 보입니다.';
+      });
+    });
+  }
+
+  /* ── 포지셔닝 지도 ─────────────────────────────────────── */
+  var pmInfo = document.getElementById('pmInfo');
+  if (pmInfo) {
+    [].forEach.call(document.querySelectorAll('.dot'), function(d){
+      d.addEventListener('click', function(){
+        [].forEach.call(document.querySelectorAll('.dot'), function(o){ o.classList.remove('sel'); });
+        d.classList.add('sel');
+        var x = d.getAttribute('data-x');
+        pmInfo.innerHTML = '';
+        var b = document.createElement('b');
+        b.textContent = d.getAttribute('data-k') + (x ? '  ·  가로축 ' + x : '');
+        var p = document.createElement('span');
+        p.textContent = d.getAttribute('data-t');
+        pmInfo.appendChild(b); pmInfo.appendChild(p);
+      });
+    });
+  }
+
+  /* ── 판정 3등급 ────────────────────────────────────────── */
+  var VD = {
+    /* Figma 보드(Full Hi-Fi Product Screens)의 결과 화면 문구 그대로입니다 */
+    d: '<b>답장하거나 돈을 보내지 마세요.</b> ① 답하지 마세요 · ② 112에 전화해서 신고하세요 · ③ 가족에게 알리세요',
+    c: '<b>답하지 마세요.</b> ① 답하지 마세요 · ② 되물을 말을 보세요 · ③ 가족에게 물어보세요',
+    u: '<b>받기만 하면 되는 문자입니다.</b> ① 답하지 않으셔도 됩니다 · ② 문자 속 번호와 주소는 누르지 마세요 · ③ 걱정되시면 기관 대표번호를 직접 찾아 전화하세요. <b>안전하다는 뜻이 아닙니다.</b>'
+  };
+  var vdInfo = document.getElementById('vdInfo');
+  if (vdInfo) {
+    var lamps = document.querySelectorAll('.signal .lamp[data-v]');
+    [].forEach.call(lamps, function(v){
+      v.addEventListener('click', function(){
+        [].forEach.call(lamps, function(o){
+          o.classList.toggle('on', o === v);
+          o.setAttribute('aria-pressed', String(o === v));
+        });
+        vdInfo.innerHTML = '<p class="sm">' + VD[v.getAttribute('data-v')] + '</p>';
+      });
+    });
+    vdInfo.innerHTML = '<p class="sm">' + VD.d + '</p>';
+  }
+
+  /* ── 성과 입증 단계 ────────────────────────────────────── */
+  var tbl = document.getElementById('proveTbl');
+  if (tbl) {
+    [].forEach.call(document.querySelectorAll('.step'), function(st){
+      st.addEventListener('click', function(){
+        var n = st.getAttribute('data-step');
+        [].forEach.call(document.querySelectorAll('.step'), function(o){ o.classList.toggle('on', o === st); });
+        [].forEach.call(tbl.querySelectorAll('tbody tr'), function(tr){
+          var hit = tr.getAttribute('data-row') === n;
+          tr.style.background = hit ? 'var(--mist)' : '';
+          tr.style.opacity = (n === '4' || hit) ? '1' : '.4';
+        });
+      });
+    });
+  }
+
+  /* ── 시장 동심원 ───────────────────────────────────────── */
+  var mkInfo = document.getElementById('mkInfo');
+  if (mkInfo) {
+    [].forEach.call(document.querySelectorAll('.ring'), function(r){
+      r.addEventListener('click', function(e){
+        e.stopPropagation();
+        [].forEach.call(document.querySelectorAll('.ring'), function(o){ o.classList.toggle('sel', o === r); });
+        mkInfo.innerHTML = '';
+        var l = document.createElement('p'); l.className = 'lab'; l.textContent = r.getAttribute('data-k');
+        var v = document.createElement('b'); v.className = 'big s3 grn'; v.textContent = r.getAttribute('data-v');
+        var t = document.createElement('p'); t.className = 'sm'; t.style.marginTop = '6px';
+        t.textContent = r.getAttribute('data-t');
+        mkInfo.appendChild(l); mkInfo.appendChild(v); mkInfo.appendChild(t);
+      });
+    });
+  }
+
+  /* ── 매출 막대 ↔ 구성 ──────────────────────────────────── */
+  var bars = document.getElementById('bars');
+  if (bars) {
+    var plan = document.getElementById('plan');
+    var pick = function(y){
+      [].forEach.call(bars.querySelectorAll('.barwrap'), function(b){
+        b.classList.toggle('on', b.getAttribute('data-y') === y);
+      });
+      [].forEach.call(plan.querySelectorAll('.tap'), function(c){
+        var hit = c.getAttribute('data-y') === y;
+        c.style.borderColor = hit ? 'var(--coral)' : '';
+        c.style.background = hit ? 'var(--blush)' : '';
+      });
+    };
+    [].forEach.call(bars.querySelectorAll('.barwrap'), function(b){
+      b.addEventListener('click', function(){ pick(b.getAttribute('data-y')); });
+    });
+    [].forEach.call(plan.querySelectorAll('.tap'), function(c){
+      c.addEventListener('click', function(){ pick(c.getAttribute('data-y')); });
+    });
+  }
+
+  /* ── 리스크 ────────────────────────────────────────────── */
+  var RISK = [
+    ['Google Play 문자 권한', '「스미싱 방지」 예외는 보호 실적을 요구합니다.',
+     '권한 없는 「공유로 확인」을 모든 빌드에 둡니다. 스토어 빌드엔 문자 권한을 넣지 않고, 예외는 「스팸 탐지」 항목으로 따로 신청합니다.'],
+    ['판정이 틀릴 때', '사기를 놓치거나 정상 문자에 경고가 뜰 수 있습니다.',
+     '「안전」 등급을 두지 않습니다. 자동으로 지우거나 막지 않습니다. 판정 신고를 받고 업데이트로 당일 고칩니다.'],
+    ['금융기관 단가 미검증', '공개 계약 단가가 없고 영업 기간이 깁니다.',
+     '면담 3곳 이상으로 확인합니다. 지방 금융 5,000만원부터 시작하고, 지자체 매출로 초기 운영을 버팁니다.'],
+    ['기술 협력 의존', '판정 엔진을 AXistant에 맡깁니다.',
+     '판정 기준 · 데이터 · 평가는 찬찬이 소유합니다. 온디바이스 조건과 인수 조항을 계약에 명시합니다.'],
+    ['같은 기관 시장의 선발주자', '보이스쉴드가 송파 복지관에 먼저 들어왔습니다.',
+     '전화(보이스쉴드) · 문자(찬찬)로 보완 관계를 제안합니다.'],
+    ['무료 대안', '시티즌코난 · 통신사 · 삼성은 무료입니다.',
+     '어르신에게는 찬찬도 무료입니다. 기관은 입증된 예방 성과에 비용을 냅니다.'],
+    ['찬찬 사칭 앱', '시티즌코난을 흉내 낸 악성앱이 유포된 사례가 있습니다 (SBS 2024.11.15).',
+     '공식 설치 경로를 QR · 기관 공지로 하나로 고정하고, 사칭 신고 창구를 안내합니다.'],
+    ['해외 근거', '해외 단가 · 언어 · 메신저 경로 · 아이폰이 모두 과제입니다.',
+     '3년차까지 한국에서 증명합니다. 싱가포르부터 가고, 미국은 2031 목표에서 뺐습니다.'],
+    ['성과 입증 실패', '모의 문자에서 차이가 안 날 수 있습니다.',
+     '측정 설계를 미리 공개합니다. 차이가 없으면 경고 방식부터 다시 설계하고 상위 계약은 보류합니다.']
+  ];
+  var riskInfo = document.getElementById('riskInfo');
+  if (riskInfo) {
+    var showRisk = function(n){
+      var r = RISK[n];
+      riskInfo.innerHTML =
+        '<h3 class="brick">' + r[0] + '</h3>' +
+        '<p class="lab" style="margin-top:14px">왜</p><p class="sm">' + r[1] + '</p>' +
+        '<p class="lab" style="margin-top:14px">대응</p><p class="sm">' + r[2] + '</p>';
+    };
+    [].forEach.call(document.querySelectorAll('#risks [data-r]'), function(b){
+      b.addEventListener('click', function(){
+        [].forEach.call(document.querySelectorAll('#risks [data-r]'), function(o){
+          o.classList.toggle('on', o === b);
+          o.style.borderColor = o === b ? 'var(--coral)' : '';
+        });
+        showRisk(+b.getAttribute('data-r'));
+      });
+    });
+    showRisk(0);
+    document.querySelector('#risks [data-r="0"]').style.borderColor = 'var(--coral)';
+  }
+
+  /* ── 부록 출처 ─────────────────────────────────────────── */
+  var SRC = window.IR_SOURCES || [];
+  var NAME = {'2':'문제','3':'고령층','4':'고객','5':'경쟁','13':'판정 · 데이터',
+              '18':'가격 근거','20':'시장','22':'진입 전략','25':'리스크'};
+  var body = document.getElementById('srcBody');
+  if (body) {
+    var q = document.getElementById('q'), foundN = document.getElementById('foundN');
+    var chapters = document.getElementById('chapters'), picked = 'all';
+    var chs = [];
+    SRC.forEach(function(r){ if (chs.indexOf(r[0]) < 0) chs.push(r[0]); });
+    chs.sort(function(a, b){ return (+a) - (+b); });
+    var chip = function(label, val){
+      var b = document.createElement('button');
+      b.className = 'f' + (val === 'all' ? ' on' : '');
+      b.type = 'button'; b.style.fontSize = '14px'; b.style.padding = '6px 12px';
+      b.textContent = label;
+      b.addEventListener('click', function(){
+        picked = val;
+        [].forEach.call(chapters.querySelectorAll('.f'), function(o){ o.classList.toggle('on', o === b); });
+        draw();
+      });
+      chapters.appendChild(b);
+    };
+    chip('전체', 'all');
+    chs.forEach(function(c){ chip(NAME[c] || ('' + c), c); });
+    var draw = function(){
+      var term = (q.value || '').trim().toLowerCase();
+      body.innerHTML = '';
+      var n = 0;
+      SRC.forEach(function(r){
+        if (picked !== 'all' && r[0] !== picked) return;
+        if (term && (r[1] + ' ' + r[2] + ' ' + r[3]).toLowerCase().indexOf(term) < 0) return;
+        n++;
+        var tr = document.createElement('tr');
+        [NAME[r[0]] || r[0], r[1], r[2], r[3]].forEach(function(c, j){
+          var td = document.createElement('td');
+          td.textContent = c;
+          if (j === 0) td.className = 'k gr';
+          if (j >= 2) { td.style.fontSize = '14px'; td.style.color = 'var(--slate)'; }
+          tr.appendChild(td);
+        });
+        body.appendChild(tr);
+      });
+      foundN.textContent = n + ' / ' + SRC.length + '줄';
+    };
+    q.addEventListener('input', draw);
+    draw();
+  }
+
+  /* ── 목차 · 그림 확대 · 세로 안내 ──────────────────────── */
+  var toc = document.getElementById('toc');
+  function openToc(){ toc.classList.add('show'); }
+  function closeToc(){ toc.classList.remove('show'); }
+  document.getElementById('tocBtn').addEventListener('click', openToc);
+  document.getElementById('tocClose').addEventListener('click', closeToc);
+  toc.addEventListener('click', function(e){ if (e.target === toc) closeToc(); });
+
+  var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg');
+  function closeLb(){ lb.classList.remove('show'); }
+  lb.addEventListener('click', closeLb);
+  document.addEventListener('click', function(e){
+    var el = e.target.closest ? e.target.closest('[data-lb]') : null;
+    if (!el) return;
+    lbImg.src = el.getAttribute('data-lb') || el.getAttribute('src');
+    lbImg.alt = el.getAttribute('alt') || '크게 본 그림';
+    lb.classList.add('show');
+  });
+
+  var rot = document.getElementById('rot');
+  function checkRot(){
+    var portrait = window.innerHeight > window.innerWidth && window.innerWidth < 760;
+    rot.classList.toggle('show', portrait && !sessionStorage.getItem('rotOk'));
+  }
+  document.getElementById('rotGo').addEventListener('click', function(){
+    try { sessionStorage.setItem('rotOk', '1'); } catch (e) {}
+    rot.classList.remove('show');
+  });
+  window.addEventListener('resize', checkRot);
+
+  /* ── 시작 ──────────────────────────────────────────────── */
+  fit(); checkRot();
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  go(isFinite(start) && start >= 1 ? start - 1 : 0);
+  window.addEventListener('hashchange', function(){
+    var n = parseInt((location.hash || '').replace('#', ''), 10);
+    if (isFinite(n) && n - 1 !== i) go(n - 1);
+  });
+  if (!reduce) next.classList.add('hintpulse');
+})();
+</script>
+</body>
+</html>
