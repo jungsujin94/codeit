@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  찬찬 랜딩 — 테마
+  · 브랜드 색은 chanchan.kr 원본 CSS 토큰을 그대로 옮겼습니다 (--green → cc-green).
+  · shadcn/ui 토큰(primary, border …)도 같은 브랜드 색을 가리키게 했습니다.
+  · 글꼴은 광양햇살체 한 벌(layout.tsx 의 next/font/local)이고, 없으면 맑은 고딕으로 갑니다.
+*/
+
+@theme inline {
+  /* ── 브랜드 색 (원본 :root 토큰) ── */
+  --color-cc-green: #2f6b4f;
+  --color-cc-deep: #183f30;
+  --color-cc-leaf: #4f8f69;
+  --color-cc-mist: #e9f2ec;
+  --color-cc-bg: #fffdfc;
+  --color-cc-ivory: #f7f3ea;
+  --color-cc-coral: #d96b63;
+  --color-cc-alert: #b84a44;
+  --color-cc-ink: #24332b;
+  --color-cc-muted: #5e6b63;
+  --color-cc-line: #dde7e0;
+  --color-cc-blush: #fbe9e7;
+  --color-cc-amber-bg: #fdf3e3;
+  --color-cc-amber: #b7791f;
+  /* 어두운 구간(section.dark · footer)의 글자색 */
+  --color-cc-snow: #f2f7f3;
+  --color-cc-sage: #bfd4c7;
+  --color-cc-moss: #8fa79a;
+  --color-cc-haze: #a9c9b6;
+
+  /* ── 화면 폭: 원본과 같이 980px 에서 한 줄 ↔ 두 줄이 바뀝니다 ── */
+  --breakpoint-lg: 61.25rem;
+
+  /* ── 글꼴 ── */
+  --font-sans: var(--font-gwangyang), "Malgun Gothic", "맑은 고딕", -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, monospace;
+
+  /* ── 움직임 ── */
+  --ease-rise: cubic-bezier(0.2, 0.85, 0.25, 1);
+  --animate-ph-back: ph-in-back 0.9s cubic-bezier(0.2, 0.85, 0.25, 1) both,
+    float-back 6.5s ease-in-out 1.4s infinite;
+  --animate-ph-front: ph-in-front 0.9s cubic-bezier(0.2, 0.85, 0.25, 1) 0.12s both,
+    float-front 7s ease-in-out 1.6s infinite;
+  --animate-scan: scan 1s linear forwards;
+  --animate-fade-up: fade-up 0.4s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+
+  /* ── shadcn/ui 토큰 → 브랜드 색 ── */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #fffdfc;
+  --foreground: #24332b;
+  --card: #ffffff;
+  --card-foreground: #24332b;
+  --popover: #ffffff;
+  --popover-foreground: #24332b;
+  --primary: #2f6b4f;
+  --primary-foreground: #ffffff;
+  --secondary: #e9f2ec;
+  --secondary-foreground: #183f30;
+  --muted: #e9f2ec;
+  --muted-foreground: #5e6b63;
+  --accent: #e9f2ec;
+  --accent-foreground: #2f6b4f;
+  --destructive: #b84a44;
+  --border: #dde7e0;
+  --input: #dde7e0;
+  --ring: #4f8f69;
+  --radius: 0.875rem;
+}
+
+/* 히어로의 폰 두 대: 들어온 뒤 천천히 떠 있습니다 */
+@keyframes ph-in-back {
+  from { opacity: 0; transform: translate(-36px, 20px) rotate(-7deg); }
+  to { opacity: 1; transform: translate(0, 0) rotate(-5deg); }
+}
+@keyframes ph-in-front {
+  from { opacity: 0; transform: translate(36px, 20px) rotate(6deg); }
+  to { opacity: 1; transform: translate(0, 0) rotate(4deg); }
+}
+@keyframes float-back {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-7px) rotate(-5deg); }
+}
+@keyframes float-front {
+  0%, 100% { transform: translateY(0) rotate(4deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+@keyframes scan {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: 84px;
+  }
+  /* 어르신용: 본문 17px 아래로 내려가지 않습니다 */
+  body {
+    @apply bg-cc-bg text-cc-ink antialiased;
+    font-size: 17px;
+    line-height: 1.62;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, b, strong {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  a {
+    color: var(--color-cc-green);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-cc-leaf);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
