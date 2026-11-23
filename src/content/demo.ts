@@ -53,6 +53,13 @@ export const demo = {
     title: "두 폰으로 직접 눌러 보기",
     sub: "가입부터 가족에게 알리기까지, 어머니 폰과 딸 폰으로 따라가 보세요",
   },
+  /* 미션 6 에서 더한 길 — 원본 chanchan.kr 에는 없습니다 */
+  cases: {
+    href: "/cases",
+    icon: "🗂️",
+    title: "의심 문자 사례집",
+    sub: "다른 분들이 받은 의심 문자를 보고, 받으신 문자도 남겨 보세요",
+  },
   screen: {
     brand: "찬찬",
     title: "확인 결과",

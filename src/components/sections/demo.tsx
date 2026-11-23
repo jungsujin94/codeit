@@ -153,6 +153,24 @@ export function Demo() {
                 →
               </span>
             </Reveal>
+            {/* 미션 6: 의심 문자 사례집(CRUD)으로 가는 길 */}
+            <Reveal
+              as="a"
+              delay={2}
+              href={demo.cases.href}
+              className="mt-3 flex items-center gap-3.5 rounded-[18px] bg-white px-[18px] py-4 text-cc-deep no-underline shadow-[inset_0_0_0_1.5px_var(--color-cc-line)] hover:shadow-[inset_0_0_0_2px_var(--color-cc-leaf)]"
+            >
+              <span className="flex-none text-[22px]" aria-hidden="true">
+                {demo.cases.icon}
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <b className="text-[17px]">{demo.cases.title}</b>
+                <small className="mt-0.5 text-sm text-cc-muted">{demo.cases.sub}</small>
+              </span>
+              <span className="flex-none text-[22px] font-bold" aria-hidden="true">
+                →
+              </span>
+            </Reveal>
           </div>
 
           <Reveal

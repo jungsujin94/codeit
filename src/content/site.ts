@@ -30,6 +30,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: "작동 방식", href: `#${SECTION.demo}` },
   { label: "이용 대상", href: `#${SECTION.audience}` },
   { label: "기관 도입", href: `#${SECTION.institution}` },
+  { label: "사례집", href: "/cases" },
   { label: "두 폰 체험", href: `${LIVE_SITE}/prototype` },
 ]
 

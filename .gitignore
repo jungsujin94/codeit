@@ -44,3 +44,7 @@ next-env.d.ts
 *.zip
 /dist/
 *.ttf
+
+# 내 컴퓨터에서 npm run dev 로 저장한 사례 (배포에서는 Vercel Blob 을 씁니다)
+/.data/
+!.env.example
