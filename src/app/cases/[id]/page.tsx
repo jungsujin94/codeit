@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { buttonVariants } from "@/components/ui/button"
 import { NumberedSteps } from "@/components/signal"
@@ -16,7 +17,12 @@ export async function generateMetadata({ params }: PageProps<"/cases/[id]">): Pr
   const item = await getCase((await params).id)
   if (!item) return { title: cases.notFound.title }
   const description = item.message.slice(0, 110)
+  /* 랜딩은 chanchan.kr 를 기준 주소로 씁니다. 사례 그림은 이 앱에만 있으므로 지금 주소를 기준으로 바꿉니다 */
+  const h = await headers()
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000"
+  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https")
   return {
+    metadataBase: new URL(`${proto}://${host}`),
     title: item.title,
     description,
     openGraph: {
