@@ -11,7 +11,7 @@ export function CasesHeader() {
     <>
       <header className="sticky top-0 z-50 border-b border-cc-line bg-cc-bg/94 backdrop-blur-[10px]">
         <Wrap className="flex h-[74px] items-center gap-3">
-          <Link href="/" className="flex flex-none items-center gap-[9px] text-cc-ink no-underline">
+          <Link href="/" className="flex min-h-11 flex-none items-center gap-[9px] text-cc-ink no-underline">
             <Image src="/logo.png" alt={header.logoAlt} width={40} height={40} className="size-10" />
             <span className="hidden text-[15px] text-cc-muted sm:inline">{cases.nav.home}</span>
           </Link>
